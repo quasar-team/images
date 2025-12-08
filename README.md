@@ -1,20 +1,19 @@
- # Quasar Framework Docker & Podman Images
+# Quasar Framework Docker & Podman Images
 
  This repository contains Dockerfiles and helper scripts to build Docker or Podman images for building and testing the [Quasar Framework](https://quasar.dev/) and related tooling.
 
- ## Prerequisites
+## Prerequisites
 
- - Docker or Podman installed on your system
+- Docker or Podman installed on your system
 
- ## Usage
+## Usage
 
- Build all images using:
+Build all images using:
 
- ```bash
- docker build -f <path/to/Dockerfile> -t <image-name>:<tag> .
- ```
+```bash
+docker build -f <path/to/Dockerfile> -t <image-name>:<tag> .
+```
 
- ## Contributing
+## Contributing
 
- Contributions are welcome! Please open issues or submit pull requests.
-
+Contributions are welcome! Please open issues or submit pull requests.
