@@ -1,6 +1,6 @@
 # Quasar Framework Docker & Podman Images
 
- This repository contains Dockerfiles and helper scripts to build Docker or Podman images for building and testing the [Quasar Framework](https://quasar.dev/) and related tooling.
+ This repository contains Dockerfiles and helper scripts to build Docker or Podman images for building and testing the [Quasar Framework](https://quasar.docs.cern.ch/) and related tooling.
 
 ## Prerequisites
 
