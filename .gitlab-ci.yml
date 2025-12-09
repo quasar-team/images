@@ -1,13 +1,13 @@
-Docker Image Alma 10:
-  stage: unstagged
-  image:
-    name: gcr.io/kaniko-project/executor:v1.23.2-debug
-    entrypoint: [""]
+stages:
+  - build
+
+docker_image_alma10:
+  stage: build
+  image: quay.io/buildah/stable
+  variables:
+    BUILDAH_FORMAT: docker
   script:
-    - /kaniko/executor
-      --context "${CI_PROJECT_DIR}"/ci/docker/alma9/
-      --dockerfile "${CI_PROJECT_DIR}"/ci/docker/alma9/Dockerfile
-      --destination "${CI_REGISTRY_IMAGE}/alma9-build:${CI_COMMIT_SHORT_SHA}"
-      --destination "${CI_REGISTRY_IMAGE}/alma9-build:latest"
-  before_script:
-        - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+    - echo "$CI_REGISTRY_PASSWORD" | buildah login --username "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
+    - buildah bud --file "${CI_PROJECT_DIR}/alma-10/Dockerfile" --tag "${CI_REGISTRY_IMAGE}/alma-10-build:${CI_COMMIT_SHORT_SHA}" "${CI_PROJECT_DIR}/alma-10"
+    - buildah push "${CI_REGISTRY_IMAGE}/alma-10-build:${CI_COMMIT_SHORT_SHA}"
+    - buildah push "${CI_REGISTRY_IMAGE}/alma-10-build:latest"
