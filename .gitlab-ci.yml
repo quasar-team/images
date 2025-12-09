@@ -3,8 +3,6 @@ stages:
 
 docker_image_alma10:
   stage: build
-  only:
-    - main
   image: quay.io/buildah/stable
   variables:
     BUILDAH_FORMAT: docker
@@ -12,4 +10,7 @@ docker_image_alma10:
     - echo "$CI_REGISTRY_PASSWORD" | buildah login --username "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
     - buildah bud --file "${CI_PROJECT_DIR}/alma-10/Dockerfile" --tag "${CI_REGISTRY_IMAGE}/alma-10-build:${CI_COMMIT_SHORT_SHA}" "${CI_PROJECT_DIR}/alma-10"
     - buildah push "${CI_REGISTRY_IMAGE}/alma-10-build:${CI_COMMIT_SHORT_SHA}"
-    - buildah push "${CI_REGISTRY_IMAGE}/alma-10-build:latest"
+    - |
+      if [ "$CI_COMMIT_BRANCH" = "main" ]; then
+        buildah push "${CI_REGISTRY_IMAGE}/alma-10-build:latest"
+      fi
