@@ -3,6 +3,8 @@ stages:
 
 docker_image_alma10:
   stage: build
+  only:
+    - main
   image: quay.io/buildah/stable
   variables:
     BUILDAH_FORMAT: docker
