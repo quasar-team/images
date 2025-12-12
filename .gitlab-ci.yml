@@ -12,5 +12,6 @@ docker_image_alma10:
     - buildah push "${CI_REGISTRY_IMAGE}/alma-10-build:${CI_COMMIT_SHORT_SHA}"
     - |
       if [ "$CI_COMMIT_BRANCH" = "main" ]; then
+        buildah tag "${CI_REGISTRY_IMAGE}/alma-10-build:${CI_COMMIT_SHORT_SHA}" "${CI_REGISTRY_IMAGE}/alma-10-build:latest"
         buildah push "${CI_REGISTRY_IMAGE}/alma-10-build:latest"
       fi
