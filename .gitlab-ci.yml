@@ -1,3 +1,11 @@
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "api"
+      when: always
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: always
+    - when: never
+
 stages:
   - build
 
