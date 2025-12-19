@@ -31,10 +31,10 @@ Image Windows 2025:
   script:
     - cd w2025
     - docker login -u $env:CI_REGISTRY_USER -p $env:CI_REGISTRY_PASSWORD $env:CI_REGISTRY
-    - docker build --no-cache -t $env:CI_REGISTRY_IMAGE/win2022-build:$env:CI_COMMIT_SHORT_SHA  .
-    - docker push $env:CI_REGISTRY_IMAGE/win2022-build:$env:CI_COMMIT_SHORT_SHA
+    - docker build --no-cache -t $env:CI_REGISTRY_IMAGE/win2025-build:$env:CI_COMMIT_SHORT_SHA  .
+    - docker push $env:CI_REGISTRY_IMAGE/win2025-build:$env:CI_COMMIT_SHORT_SHA
     - |
       if ($env:CI_COMMIT_BRANCH -eq "main") {
-        docker tag $env:CI_REGISTRY_IMAGE/win2022-build:$env:CI_COMMIT_SHORT_SHA  $env:CI_REGISTRY_IMAGE/win2022-build:latest 
-        docker push "$env:CI_REGISTRY_IMAGE/win2022-build:latest"
+        docker tag $env:CI_REGISTRY_IMAGE/win2025-build:$env:CI_COMMIT_SHORT_SHA  $env:CI_REGISTRY_IMAGE/win2025-build:latest 
+        docker push "$env:CI_REGISTRY_IMAGE/win2025-build:latest"
       }
