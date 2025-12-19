@@ -9,7 +9,7 @@ workflow:
 stages:
   - build
 
-docker_image_alma10:
+Image Alma 10:
   stage: build
   image: quay.io/buildah/stable
   variables:
@@ -23,3 +23,18 @@ docker_image_alma10:
         buildah tag "${CI_REGISTRY_IMAGE}/alma-10-build:${CI_COMMIT_SHORT_SHA}" "${CI_REGISTRY_IMAGE}/alma-10-build:latest"
         buildah push "${CI_REGISTRY_IMAGE}/alma-10-build:latest"
       fi
+
+Image Windows 2025:
+  stage: build
+  tags:
+    - powershell-win2025
+  script:
+    - cd w2025
+    - docker login -u $env:CI_REGISTRY_USER -p $env:CI_REGISTRY_PASSWORD $env:CI_REGISTRY
+    - docker build --no-cache -t $env:CI_REGISTRY_IMAGE/win2025-build:$env:CI_COMMIT_SHORT_SHA  .
+    - docker push $env:CI_REGISTRY_IMAGE/win2025-build:$env:CI_COMMIT_SHORT_SHA
+    - |
+      if ($env:CI_COMMIT_BRANCH -eq "main") {
+        docker tag $env:CI_REGISTRY_IMAGE/win2025-build:$env:CI_COMMIT_SHORT_SHA  $env:CI_REGISTRY_IMAGE/win2025-build:latest 
+        docker push "$env:CI_REGISTRY_IMAGE/win2025-build:latest"
+      }
