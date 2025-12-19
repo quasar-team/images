@@ -25,7 +25,7 @@ Image Alma 10:
       fi
 
 Image Windows 2025:
-  stage: unstagged
+  stage: build
   tags:
     - powershell-win2025
   script:
