@@ -21,14 +21,31 @@ Write-Host "Installing Visual Studio 2026 VC++ workload"
 choco install -y --no-progress visualstudio2026-workload-vctools
 
 # Boost
-Write-Host "Downloading Boost 1.90.0 installer"
-$boostUrl = "https://archives.boost.io/release/1.90.0/binaries/boost_1_90_0-msvc-14.3-64.exe"
-$boostInstaller = Join-Path $env:TEMP "boost_1_90_0-msvc-14.3-64.exe"
-Invoke-WebRequest -Uri $boostUrl -OutFile $boostInstaller
-Write-Host "Installing Boost to C:\boost"
-Start-Process -FilePath $boostInstaller -ArgumentList '/DIR="C:\boost" /VERYSILENT /NORESTART' -Wait
-Write-Host "Cleaning up Boost installer"
-Remove-Item -Force $boostInstaller
+$boostVersion = "1.90.0"
+$boostVersionUnderscore = $boostVersion.Replace(".", "_")
+$boostZip = "boost_$boostVersionUnderscore.zip"
+$boostUrl = "https://archives.boost.io/release/$boostVersion/source/$boostZip"
+$boostTempDir = Join-Path $env:TEMP "boost-src"
+$boostInstallDir = "C:\boost"
+
+Write-Host "Downloading Boost $boostVersion"
+New-Item -ItemType Directory -Force -Path $boostTempDir | Out-Null
+Invoke-WebRequest -Uri $boostUrl -OutFile (Join-Path $boostTempDir $boostZip)
+Expand-Archive -Path (Join-Path $boostTempDir $boostZip) -DestinationPath $boostTempDir -Force
+
+$boostSourceDir = Join-Path $boostTempDir "boost_$boostVersionUnderscore"
+$vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+$vcvarsPath = & $vswhere -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -find **\VC\Auxiliary\Build\vcvars64.bat
+if (-not $vcvarsPath) {
+  throw "Could not locate vcvars64.bat via vswhere."
+}
+
+Write-Host "Building Boost with MSVC"
+cmd /c "`"$vcvarsPath`" && cd /d `"$boostSourceDir`" && bootstrap.bat && b2 -j%NUMBER_OF_PROCESSORS% link=static runtime-link=static variant=release threading=multi --prefix=`"$boostInstallDir`" install"
+
+Write-Host "Cleaning Boost build artifacts"
+Remove-Item -Recurse -Force $boostTempDir
+Remove-Item -Recurse -Force $boostZip
 
 # Pip dependencies
 Write-Host "Refreshing environment and installing Python packages"
