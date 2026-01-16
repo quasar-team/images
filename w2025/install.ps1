@@ -10,9 +10,16 @@ choco install -y --no-progress powershell-core python git git-lfs.install nano
 choco install -y --no-progress cmake --installargs 'ADD_CMAKE_TO_PATH=System'
 choco install -y --no-progress ninja
 
-# Visual Studio 2019 Build Tools
+# Visual Studio 2026 Build Tools
 choco install -y --no-progress visualstudio2026buildtools
 choco install -y --no-progress visualstudio2026-workload-vctools
+
+# Boost
+$boostUrl = "https://archives.boost.io/release/1.90.0/binaries/boost_1_90_0-msvc-14.3-64.exe"
+$boostInstaller = Join-Path $env:TEMP "boost_1_90_0-msvc-14.3-64.exe"
+Invoke-WebRequest -Uri $boostUrl -OutFile $boostInstaller
+Start-Process -FilePath $boostInstaller -ArgumentList '/DIR="C:\boost" /VERYSILENT /NORESTART' -Wait
+Remove-Item -Force $boostInstaller
 
 # Pip dependencies
 Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1
