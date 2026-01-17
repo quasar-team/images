@@ -6,7 +6,7 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManage
 
 # Miscelaneous dependencies
 Write-Host "Installing base tools"
-choco install -y --no-progress powershell-core python git git-lfs.install nano
+choco install -y --no-progress powershell-core python git git-lfs.install nano 7zip
 
 # Install CMake and Ninja
 Write-Host "Installing CMake"
@@ -25,15 +25,16 @@ $boostVersion = "1.90.0"
 $boostVersionUnderscore = $boostVersion.Replace(".", "_")
 $boostZip = "boost_$boostVersionUnderscore.zip"
 $boostUrl = "https://archives.boost.io/release/$boostVersion/source/$boostZip"
-$boostTempDir = "C:\boost-src\"
+$boostSrcDir = "C:\boost-src\"
 $boostInstallDir = "C:\boost"
 
 Write-Host "Downloading Boost $boostVersion"
-New-Item -ItemType Directory -Force -Path $boostTempDir | Out-Null
-Invoke-WebRequest -Uri $boostUrl -OutFile (Join-Path $boostTempDir $boostZip)
-Expand-Archive -Path (Join-Path $boostTempDir $boostZip) -DestinationPath $boostTempDir -Force
+New-Item -ItemType Directory -Force -Path $boostSrcDir | Out-Null
+cd $boostSrcDir
+curl $boostUrl -o $boostZip
+."C:\Program Files\7-Zip\7z.exe" x $boostZip
 
-$boostSourceDir = Join-Path $boostTempDir "boost_$boostVersionUnderscore"
+$boostSourceDir = Join-Path $boostSrcDir "boost_$boostVersionUnderscore"
 $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
 $vcvarsPath = & $vswhere -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -find **\VC\Auxiliary\Build\vcvars64.bat
 if (-not $vcvarsPath) {
@@ -44,7 +45,8 @@ Write-Host "Building Boost with MSVC"
 cmd /c "`"$vcvarsPath`" && cd /d `"$boostSourceDir`" && bootstrap.bat && b2 -j%NUMBER_OF_PROCESSORS% link=static runtime-link=static variant=release threading=multi --prefix=`"$boostInstallDir`" install"
 
 Write-Host "Cleaning Boost build artifacts"
-Remove-Item -Recurse -Force $boostTempDir
+cd \
+Remove-Item -Recurse -Force $boostSrcDir
 
 # Pip dependencies
 Write-Host "Refreshing environment and installing Python packages"
