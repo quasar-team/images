@@ -25,7 +25,7 @@ $boostVersion = "1.90.0"
 $boostVersionUnderscore = $boostVersion.Replace(".", "_")
 $boostZip = "boost_$boostVersionUnderscore.zip"
 $boostUrl = "https://archives.boost.io/release/$boostVersion/source/$boostZip"
-$boostTempDir = Join-Path $env:TEMP "boost-src"
+$boostTempDir = "C:\boost-src\"
 $boostInstallDir = "C:\boost"
 
 Write-Host "Downloading Boost $boostVersion"
@@ -45,7 +45,6 @@ cmd /c "`"$vcvarsPath`" && cd /d `"$boostSourceDir`" && bootstrap.bat && b2 -j%N
 
 Write-Host "Cleaning Boost build artifacts"
 Remove-Item -Recurse -Force $boostTempDir
-Remove-Item -Recurse -Force $boostZip
 
 # Pip dependencies
 Write-Host "Refreshing environment and installing Python packages"
