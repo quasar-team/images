@@ -24,7 +24,7 @@ Write-Host "Installing Visual Studio 2026 VC++ workload"
 choco install -y --no-progress visualstudio2026-workload-vctools
 
 # Boost
-$url = "https://ics-deps-repo.web.cern.ch/quasar/boost/boost_1_90_0-vs2026_static.zip"
+$url = "https://ics-deps-repo.web.cern.ch/quasar/boost/boost_1_90_0_vs2026_static.zip"
 $outputFolder = "C:\"
 
 # Download the file
