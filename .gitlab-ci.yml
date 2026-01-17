@@ -30,6 +30,7 @@ Image Windows 2025:
     - powershell-win2025
   script:
     - cd w2025
+    - .\Create-DotEnv-File.ps1
     - docker login -u $env:CI_REGISTRY_USER -p $env:CI_REGISTRY_PASSWORD $env:CI_REGISTRY
     - docker build --no-cache -t $env:CI_REGISTRY_IMAGE/win2025-build:$env:CI_COMMIT_SHORT_SHA  .
     - docker push $env:CI_REGISTRY_IMAGE/win2025-build:$env:CI_COMMIT_SHORT_SHA

@@ -1,5 +1,8 @@
 $ErrorActionPreference = "Stop"
 
+# Setting environment variables
+.\Load-DotEnv-File.ps1
+
 # Install chocolatey
 Write-Host "Installing Chocolatey"
 Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
@@ -21,32 +24,19 @@ Write-Host "Installing Visual Studio 2026 VC++ workload"
 choco install -y --no-progress visualstudio2026-workload-vctools
 
 # Boost
-$boostVersion = "1.90.0"
-$boostVersionUnderscore = $boostVersion.Replace(".", "_")
-$boostZip = "boost_$boostVersionUnderscore.zip"
-$boostUrl = "https://archives.boost.io/release/$boostVersion/source/$boostZip"
-$boostSrcDir = "C:\boost-src\"
-$boostInstallDir = "C:\boost"
+$url = "https://ics-deps-repo.web.cern.ch/quasar/boost/boost_1_90_0-vs2026_static.zip"
+$outputFolder = "C:\"
 
-Write-Host "Downloading Boost $boostVersion"
-New-Item -ItemType Directory -Force -Path $boostSrcDir | Out-Null
-cd $boostSrcDir
-curl $boostUrl -o $boostZip
-."C:\Program Files\7-Zip\7z.exe" x $boostZip
+# Download the file
+Invoke-WebRequest -Headers @{"PRIVATE-TOKEN" = "${env:ICS_REPO_DEPS_TOKEN}"} -Uri $url -OutFile "$outputFolder\boost.zip"
 
-$boostSourceDir = Join-Path $boostSrcDir "boost_$boostVersionUnderscore"
-$vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
-$vcvarsPath = & $vswhere -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -find **\VC\Auxiliary\Build\vcvars64.bat
-if (-not $vcvarsPath) {
-  throw "Could not locate vcvars64.bat via vswhere."
-}
+# Extract the contents of the zip file to the output folder
+Expand-Archive -Path "$outputFolder\boost.zip" -DestinationPath $outputFolder -Force
 
-Write-Host "Building Boost with MSVC"
-cmd /c "`"$vcvarsPath`" && cd /d `"$boostSourceDir`" && bootstrap.bat && b2 -j%NUMBER_OF_PROCESSORS% link=static runtime-link=static variant=release threading=multi --prefix=`"$boostInstallDir`" install"
+Write-Host "Boost Libraries installed"
+Write-Host "Deleting Boost zip file"
+rm "$outputFolder\boost.zip"
 
-Write-Host "Cleaning Boost build artifacts"
-cd \
-Remove-Item -Recurse -Force $boostSrcDir
 
 # Pip dependencies
 Write-Host "Refreshing environment and installing Python packages"
