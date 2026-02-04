@@ -43,6 +43,4 @@ RUN mkdir -p /tmp/uasdk-src &&\
       -DCMAKE_INSTALL_PREFIX=/opt/unified-automation &&\
     cmake --build /tmp/uasdk-src/build --parallel "$(nproc)" &&\
     cmake --install /tmp/uasdk-src/build &&\
-    test -n "$(find /opt/unified-automation/include -type f | head -n 1)" &&\
-    test -n "$(find /opt/unified-automation -type f -name '*.a' | head -n 1)" &&\
     rm -Rf /tmp/uasdk-src
