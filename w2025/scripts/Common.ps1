@@ -9,16 +9,16 @@ function Invoke-Checked {
 
     & $Command @Arguments
     if ($LASTEXITCODE -ne 0) {
-        throw "Command failed with exit code $LASTEXITCODE: $Command $($Arguments -join ' ')"
+        throw "Command failed with exit code ${LASTEXITCODE}: $Command $($Arguments -join ' ')"
     }
 }
 
 function Get-VsDevCmdPath {
     $candidates = @(
         "$env:ProgramFiles\Microsoft Visual Studio\2026\BuildTools\Common7\Tools\VsDevCmd.bat",
-        "$env:ProgramFiles(x86)\Microsoft Visual Studio\2026\BuildTools\Common7\Tools\VsDevCmd.bat",
+        "${env:ProgramFiles(x86)}\Microsoft Visual Studio\2026\BuildTools\Common7\Tools\VsDevCmd.bat",
         "$env:ProgramFiles\Microsoft Visual Studio\2022\BuildTools\Common7\Tools\VsDevCmd.bat",
-        "$env:ProgramFiles(x86)\Microsoft Visual Studio\2022\BuildTools\Common7\Tools\VsDevCmd.bat"
+        "${env:ProgramFiles(x86)}\Microsoft Visual Studio\2022\BuildTools\Common7\Tools\VsDevCmd.bat"
     )
 
     foreach ($path in $candidates) {
@@ -40,7 +40,7 @@ function Invoke-VsDevShellCommand {
 
     cmd.exe /S /C $fullCommand
     if ($LASTEXITCODE -ne 0) {
-        throw "Developer shell command failed with exit code $LASTEXITCODE: $Command"
+        throw "Developer shell command failed with exit code ${LASTEXITCODE}: $Command"
     }
 }
 
