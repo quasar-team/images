@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+: "${ICS_REPO_DEPS_TOKEN:?ICS_REPO_DEPS_TOKEN is required to build UASDK}"
+
+UASDK_VERSION="2.0.2-675"
+UASDK_ZIP="uasdkcppbundle-src-linux-v${UASDK_VERSION}.zip"
+UASDK_URL="https://ics-deps-repo.web.cern.ch/quasar/uasdk/${UASDK_VERSION}/${UASDK_ZIP}"
+
+echo UNIFIED AUTOMATION UASDK VERSION: "${UASDK_VERSION}" >> /ISSUE
+echo "*******************" >> /ISSUE
+
+mkdir -p /tmp/uasdk-src
+curl -fsSL -H "PRIVATE-TOKEN: ${ICS_REPO_DEPS_TOKEN}" \
+  "${UASDK_URL}" \
+  -o /tmp/uasdk-src/uasdk.zip
+unzip -q /tmp/uasdk-src/uasdk.zip -d /tmp/uasdk-src/source
+
+uasdk_root="$(find /tmp/uasdk-src/source -name CMakeLists.txt -printf '%d:%h\n' | sort -n | head -n 1 | cut -d: -f2-)"
+cmake -S "${uasdk_root}" -B /tmp/uasdk-src/build -G Ninja \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DBUILD_SHARED_LIBS=OFF \
+  -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+  -DCMAKE_INSTALL_PREFIX=/opt/unified-automation  2>&1
+cmake --build /tmp/uasdk-src/build --parallel "$(nproc)"  2>&1
+cmake --install /tmp/uasdk-src/build  2>&1
+
+rm -rf /tmp/uasdk-src

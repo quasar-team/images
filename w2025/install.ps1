@@ -23,28 +23,22 @@ choco install -y --no-progress visualstudio2026buildtools
 Write-Host "Installing Visual Studio 2026 VC++ workload"
 choco install -y --no-progress visualstudio2026-workload-vctools
 
+# Refresh environment
+Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1
+refreshenv
+
+Write-Host "Cleaning Chocolatey cache"
+choco cache remove
+
+Write-Host "Installing Python packages"
+python -m pip install pybind11 pytest
+
 # Boost
 $url = "https://ics-deps-repo.web.cern.ch/quasar/boost/boost_1_90_0_vs2026_static.zip"
 $outputFolder = "C:\"
-
-# Download the file
 Invoke-WebRequest -Headers @{"PRIVATE-TOKEN" = "${env:ICS_REPO_DEPS_TOKEN}"} -Uri $url -OutFile "$outputFolder\boost.zip"
-
-# Extract the contents of the zip file to the output folder
 Expand-Archive -Path "$outputFolder\boost.zip" -DestinationPath $outputFolder -Force
-
 Write-Host "Boost Libraries installed"
 Write-Host "Deleting Boost zip file"
 rm "$outputFolder\boost.zip"
 
-
-# Pip dependencies
-Write-Host "Refreshing environment and installing Python packages"
-Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1
-refreshenv
-
-python -m pip install pybind11 pytest
-
-# Clean up
-Write-Host "Cleaning Chocolatey cache"
-choco cache remove
