@@ -1,44 +1,32 @@
 $ErrorActionPreference = "Stop"
+Set-StrictMode -Version Latest
 
-# Setting environment variables
-.\Load-DotEnv-File.ps1
+$scriptRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
 
-# Install chocolatey
-Write-Host "Installing Chocolatey"
-Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+. "$scriptRoot\Load-DotEnv-File.ps1"
+. "$scriptRoot\scripts\Common.ps1"
 
-# Miscelaneous dependencies
-Write-Host "Installing base tools"
-choco install -y --no-progress powershell-core python git git-lfs.install nano 7zip
+Initialize-IssueFile
 
-# Install CMake and Ninja
-Write-Host "Installing CMake"
-choco install -y --no-progress cmake --installargs 'ADD_CMAKE_TO_PATH=System'
-Write-Host "Installing Ninja"
-choco install -y --no-progress ninja
+& "$scriptRoot\scripts\Install-BaseTools.ps1"
+& "$scriptRoot\scripts\Install-Boost.ps1"
+& "$scriptRoot\scripts\Build-UASDK.ps1"
+& "$scriptRoot\scripts\Build-Open6.ps1"
 
-# Visual Studio 2026 Build Tools
-Write-Host "Installing Visual Studio 2026 Build Tools"
-choco install -y --no-progress visualstudio2026buildtools
-Write-Host "Installing Visual Studio 2026 VC++ workload"
-choco install -y --no-progress visualstudio2026-workload-vctools
+$requiredPaths = @(
+    "C:\ISSUE",
+    "C:\boost\include",
+    "C:\unified-automation\include",
+    "C:\open6\include",
+    "C:\open6\libs"
+)
 
-# Refresh environment
-Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1
-refreshenv
+foreach ($path in $requiredPaths) {
+    if (-not (Test-Path $path)) {
+        throw "Validation failed: expected path '$path' was not created."
+    }
+}
 
-Write-Host "Cleaning Chocolatey cache"
-choco cache remove
-
-Write-Host "Installing Python packages"
-python -m pip install pybind11 pytest
-
-# Boost
-$url = "https://ics-deps-repo.web.cern.ch/quasar/boost/boost_1_90_0_vs2026_static.zip"
-$outputFolder = "C:\"
-Invoke-WebRequest -Headers @{"PRIVATE-TOKEN" = "${env:ICS_REPO_DEPS_TOKEN}"} -Uri $url -OutFile "$outputFolder\boost.zip"
-Expand-Archive -Path "$outputFolder\boost.zip" -DestinationPath $outputFolder -Force
-Write-Host "Boost Libraries installed"
-Write-Host "Deleting Boost zip file"
-rm "$outputFolder\boost.zip"
-
+Write-Host "Windows image dependencies installed successfully."
+Write-Host "Issue file location: C:\ISSUE"
+Get-Content "C:\ISSUE"
