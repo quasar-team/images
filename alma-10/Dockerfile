@@ -14,7 +14,7 @@ RUN uname -a &>> /ISSUE &&\
     echo "*******************" >> /ISSUE &&\
     echo Ninja Version: $(ninja-build --version) >> /ISSUE &&\
     echo "*******************" >> /ISSUE &&\
-    cmake --version &> /ISSUE &&\
+    cmake --version &>> /ISSUE &&\
     echo "*******************" >> /ISSUE &&\
     g++ --version &>> /ISSUE &&\
     echo "*******************" >> /ISSUE
