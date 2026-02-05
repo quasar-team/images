@@ -6,9 +6,9 @@ RUN dnf install -q -y epel-release &&\
     dnf install -q -y cmake ninja-build g++ automake autoconf libtool \
                    cppcheck nano git git-lfs python \
                    python-pip python-devel doxygen \
-                   curl tar unzip which &>/dev/null &&\
+                   curl tar unzip which & &&\
     dnf clean all
-RUN pip install --quiet pre-commit clang-format pytest pybind11 &>/dev/null
+RUN pip install --quiet pre-commit clang-format pytest pybind11 &
 
 RUN uname -a &>> /ISSUE &&\
     echo "*******************" >> /ISSUE &&\

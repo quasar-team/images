@@ -17,8 +17,8 @@ cmake -S /tmp/open6-src -B /tmp/open6-src/build -G Ninja \
   -DBUILD_SHARED_LIBS=OFF \
   -DUA_BUILD_SHARED_LIBS=OFF \
   -DCMAKE_INSTALL_PREFIX=/opt/open6 \
-  -DCMAKE_INSTALL_LIBDIR=libs >/dev/null 2>&1
-cmake --build /tmp/open6-src/build --parallel "$(nproc)" >/dev/null 2>&1
-cmake --install /tmp/open6-src/build >/dev/null 2>&1
+  -DCMAKE_INSTALL_LIBDIR=libs  2>&1
+cmake --build /tmp/open6-src/build --parallel "$(nproc)"  2>&1
+cmake --install /tmp/open6-src/build  2>&1
 
 rm -rf /tmp/open6-src

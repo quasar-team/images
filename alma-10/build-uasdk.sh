@@ -21,8 +21,8 @@ cmake -S "${uasdk_root}" -B /tmp/uasdk-src/build -G Ninja \
   -DCMAKE_BUILD_TYPE=Release \
   -DBUILD_SHARED_LIBS=OFF \
   -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-  -DCMAKE_INSTALL_PREFIX=/opt/unified-automation >/dev/null 2>&1
-cmake --build /tmp/uasdk-src/build --parallel "$(nproc)" >/dev/null 2>&1
-cmake --install /tmp/uasdk-src/build >/dev/null 2>&1
+  -DCMAKE_INSTALL_PREFIX=/opt/unified-automation  2>&1
+cmake --build /tmp/uasdk-src/build --parallel "$(nproc)"  2>&1
+cmake --install /tmp/uasdk-src/build  2>&1
 
 rm -rf /tmp/uasdk-src
