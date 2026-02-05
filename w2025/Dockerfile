@@ -4,3 +4,5 @@ WORKDIR C:\
 COPY . .
 
 RUN powershell -NoLogo -NoProfile -ExecutionPolicy Bypass .\install.ps1
+
+ENTRYPOINT ["pwsh", "-NoLogo", "-NoProfile", "-File", "C:\\entrypoint.ps1"]

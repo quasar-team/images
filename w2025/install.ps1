@@ -16,7 +16,9 @@ Initialize-IssueFile
 $requiredPaths = @(
     "C:\ISSUE",
     "C:\boost\include",
+    "C:\boost\libs",
     "C:\unified-automation\include",
+    "C:\unified-automation\libs",
     "C:\open6\include",
     "C:\open6\libs"
 )
