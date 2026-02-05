@@ -3,9 +3,16 @@ set -euo pipefail
 
 : "${ICS_REPO_DEPS_TOKEN:?ICS_REPO_DEPS_TOKEN is required to build UASDK}"
 
+UASDK_VERSION="2.0.2-675"
+UASDK_ZIP="uasdkcppbundle-src-linux-v${UASDK_VERSION}.zip"
+UASDK_URL="https://ics-deps-repo.web.cern.ch/quasar/uasdk/${UASDK_VERSION}/${UASDK_ZIP}"
+
+echo UNIFIED AUTOMATION UASDK VERSION: "${UASDK_VERSION}" >> /ISSUE
+echo "*******************" >> /ISSUE
+
 mkdir -p /tmp/uasdk-src
 curl -fsSL -H "PRIVATE-TOKEN: ${ICS_REPO_DEPS_TOKEN}" \
-  "https://ics-deps-repo.web.cern.ch/quasar/uasdk/2.0.2-675/uasdkcppbundle-src-linux-v2.0.2-675.zip" \
+  "${UASDK_URL}" \
   -o /tmp/uasdk-src/uasdk.zip
 unzip -q /tmp/uasdk-src/uasdk.zip -d /tmp/uasdk-src/source
 

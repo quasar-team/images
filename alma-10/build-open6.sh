@@ -1,8 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+OPEN6_VERSION="1.5.0"
+OPEN6_URL="https://github.com/open62541/open62541/archive/refs/tags/v${OPEN6_VERSION}.tar.gz"
+
+echo OPEN6 VERSION: "${OPEN6_VERSION}" >> /ISSUE
+echo "*******************" >> /ISSUE
+
 mkdir -p /tmp/open6-src
-curl -fsSL https://github.com/open62541/open62541/archive/refs/tags/v1.5.0.tar.gz \
+
+curl -fsSL "${OPEN6_URL}" \
   | tar -xz -C /tmp/open6-src --strip-components=1
 
 cmake -S /tmp/open6-src -B /tmp/open6-src/build -G Ninja \

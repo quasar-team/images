@@ -16,10 +16,15 @@ RUN g++ --version &> /ISSUE &&\
     echo "*******************" >> /ISSUE &&\
     cmake --version &> /ISSUE &&\
     echo "*******************" >> /ISSUE &&\
-    uname -a &> /ISSUE
+    uname -a &> /ISSUE &&\
+    echo "*******************" >> /ISSUE
+
 
 COPY build-boost.sh build-uasdk.sh build-open6.sh /tmp/
 RUN chmod +x /tmp/build-boost.sh /tmp/build-uasdk.sh /tmp/build-open6.sh &&\
     /tmp/build-boost.sh &&\
     ICS_REPO_DEPS_TOKEN="$ICS_REPO_DEPS_TOKEN" /tmp/build-uasdk.sh &&\
     /tmp/build-open6.sh
+
+COPY entrypoint.sh /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]

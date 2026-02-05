@@ -1,8 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+BOOST_VERSION="1.90.0"
+BOOST_URL="https://archives.boost.io/release/${BOOST_VERSION}/source/boost_1_90_0.tar.gz"
+
+echo BOOST VERSION: "${BOOST_VERSION}" >> /ISSUE
+echo "*******************" >> /ISSUE
+
 mkdir -p /tmp/boost-src
-curl -fsSL https://archives.boost.io/release/1.90.0/source/boost_1_90_0.tar.gz \
+curl -fsSL "${BOOST_URL}" \
   | tar -xz -C /tmp/boost-src --strip-components=1
 
 pushd /tmp/boost-src >/dev/null
