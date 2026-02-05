@@ -10,15 +10,14 @@ RUN dnf install -q -y epel-release &&\
     dnf clean all
 RUN pip install --quiet pre-commit clang-format pytest pybind11 &>/dev/null
 
-RUN g++ --version &> /ISSUE &&\
+RUN uname -a &>> /ISSUE &&\
     echo "*******************" >> /ISSUE &&\
     echo Ninja Version: $(ninja-build --version) >> /ISSUE &&\
     echo "*******************" >> /ISSUE &&\
     cmake --version &> /ISSUE &&\
     echo "*******************" >> /ISSUE &&\
-    uname -a &> /ISSUE &&\
+    g++ --version &>> /ISSUE &&\
     echo "*******************" >> /ISSUE
-
 
 COPY build-boost.sh build-uasdk.sh build-open6.sh /tmp/
 RUN chmod +x /tmp/build-boost.sh /tmp/build-uasdk.sh /tmp/build-open6.sh &&\
