@@ -16,11 +16,11 @@ Initialize-IssueFile
 $requiredPaths = @(
     "C:\ISSUE",
     "C:\boost\include",
-    "C:\boost\libs",
+    "C:\boost\lib",
     "C:\unified-automation\include",
-    "C:\unified-automation\libs",
+    "C:\unified-automation\lib",
     "C:\open6\include",
-    "C:\open6\libs"
+    "C:\open6\lib"
 )
 
 foreach ($path in $requiredPaths) {
