@@ -27,4 +27,5 @@ RUN chmod +x /tmp/build-boost.sh /tmp/build-uasdk.sh /tmp/build-open6.sh &&\
     /tmp/build-open6.sh
 
 COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
