@@ -26,6 +26,7 @@ Write-Host "Cleaning Chocolatey cache"
 Invoke-Checked choco @('cache', 'remove')
 
 Write-Host "Installing Python packages"
+Invoke-Checked python @('-m', 'pip', 'install', '--upgrade', 'pip')
 Invoke-Checked python @('-m', 'pip', 'install', '--no-cache-dir', 'pybind11', 'pytest')
 
 $osCaption = (Get-CimInstance -ClassName Win32_OperatingSystem).Caption

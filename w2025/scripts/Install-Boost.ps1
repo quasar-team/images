@@ -29,7 +29,11 @@ if (Test-Path $installPath) {
 }
 New-Item -Path $installPath -ItemType Directory | Out-Null
 
-$extractEntries = Get-ChildItem -Path $tempExtractPath -Force
+$extractEntries = @(Get-ChildItem -Path $tempExtractPath -Force)
+if ($extractEntries.Count -eq 0) {
+    throw "Boost archive extraction produced no files."
+}
+
 if ($extractEntries.Count -eq 1 -and $extractEntries[0].PSIsContainer) {
     Copy-Item -Path "$($extractEntries[0].FullName)\*" -Destination $installPath -Recurse -Force
 } else {
