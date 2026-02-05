@@ -1,5 +1,8 @@
 FROM registry.cern.ch/mcr.microsoft.com/windows/server:ltsc2025
 
-COPY ./* ./
+WORKDIR C:\\
+COPY . .
 
-RUN powershell .\install.ps1
+RUN powershell -NoLogo -NoProfile -ExecutionPolicy Bypass .\install.ps1
+
+ENTRYPOINT ["pwsh", "-NoLogo", "-NoProfile", "-File", "C:\\entrypoint.ps1"]

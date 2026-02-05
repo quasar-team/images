@@ -1,16 +1,27 @@
-$ErrorActionPreference = "Stop" 
+$ErrorActionPreference = "Stop"
+Set-StrictMode -Version Latest
 
-# Read the .env file
-$fileContent = Get-Content ".env"
-
-# Loop through each line in the .env file
-foreach ($line in $fileContent) {
-    # Split the line into the variable name and its value
-    $variableName, $value = $line -split "="
-
-    # Set the environment variable with the given name to the specified value
-    Set-Item -Path "env:$variableName" -Value $value.Trim()
+if (-not (Test-Path ".env")) {
+    throw "Expected .env file was not found."
 }
 
-# Delete the .env file
+$fileContent = Get-Content ".env"
+
+foreach ($line in $fileContent) {
+    $trimmed = $line.Trim()
+    if ([string]::IsNullOrWhiteSpace($trimmed) -or $trimmed.StartsWith("#")) {
+        continue
+    }
+
+    $parts = $trimmed -split "=", 2
+    if ($parts.Count -ne 2) {
+        throw "Invalid .env line: '$line'"
+    }
+
+    $variableName = $parts[0].Trim()
+    $value = $parts[1]
+
+    Set-Item -Path "env:$variableName" -Value $value
+}
+
 Remove-Item ".env"
