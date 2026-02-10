@@ -52,4 +52,17 @@ Invoke-VsDevShellCommand -Command $configure
 Invoke-VsDevShellCommand -Command $build
 Invoke-VsDevShellCommand -Command $install
 
+$thirdPartyDir = Get-ChildItem -Path $sourceRoot -Directory -Recurse |
+    Where-Object { $_.Name -eq "third-party" } |
+    Sort-Object { $_.FullName.Length } |
+    Select-Object -First 1
+
+if ($null -eq $thirdPartyDir) {
+    throw "Unable to find third-party directory in extracted UASDK sources."
+}
+
+$thirdPartyInstallPath = Join-Path $installPath "third-party"
+Write-Host "Copying UASDK third-party folder to install path"
+Copy-Item -Path $thirdPartyDir.FullName -Destination $thirdPartyInstallPath -Recurse -Force
+
 Remove-Item -Path $workRoot -Recurse -Force
