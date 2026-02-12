@@ -4,6 +4,7 @@ Set-StrictMode -Version Latest
 . "$PSScriptRoot\Common.ps1"
 
 Assert-RequiredEnvVar -Name "ICS_REPO_DEPS_TOKEN"
+Assert-RequiredEnvVar -Name "UNIFIED_AUTOMATION_HOME"
 
 $uasdkVersion = "2.0.2-675"
 $uasdkUrl = "https://ics-deps-repo.web.cern.ch/quasar/uasdk/2.0.2-675/uasdkcppbundle-src-windows-v2.0.2-675.zip"
@@ -11,9 +12,10 @@ $workRoot = "C:\uasdk-src"
 $archivePath = "$workRoot\uasdk.zip"
 $sourceRoot = "$workRoot\source"
 $buildPath = "$workRoot\build"
-$installPath = "C:\unified-automation"
+$installPath = [Environment]::GetEnvironmentVariable("UNIFIED_AUTOMATION_HOME")
 
 Add-IssueSection "UNIFIED AUTOMATION UASDK VERSION: $uasdkVersion"
+Add-IssueSection "UNIFIED_AUTOMATION_HOME: $installPath"
 
 if (Test-Path $workRoot) {
     Remove-Item -Path $workRoot -Recurse -Force

@@ -1,5 +1,8 @@
 FROM gitlab-registry.cern.ch/linuxsupport/alma10-base:latest
 ARG ICS_REPO_DEPS_TOKEN
+ENV BOOST_HOME=/opt/boost
+ENV UNIFIED_AUTOMATION_HOME=/opt/unified-automation
+ENV OPEN6_HOME=/opt/open6
 
 RUN dnf install -q -y epel-release &&\
     dnf update -q -y &&\
@@ -10,7 +13,9 @@ RUN dnf install -q -y epel-release &&\
     dnf clean all &&\
     pip install --quiet pre-commit clang-format pytest pybind11 
 
-RUN uname -a &>> /ISSUE &&\
+RUN echo "Generated: $(date '+%Y-%m-%d %H:%M')" >> /ISSUE &&\
+    echo "*******************" >> /ISSUE &&\
+    uname -a &>> /ISSUE &&\
     echo "*******************" >> /ISSUE &&\
     echo Ninja Version: $(ninja-build --version) >> /ISSUE &&\
     echo "*******************" >> /ISSUE &&\

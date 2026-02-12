@@ -2,6 +2,7 @@ $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
 . "$PSScriptRoot\Common.ps1"
+Assert-RequiredEnvVar -Name "OPEN6_HOME"
 
 $open6Version = "1.5.0"
 $open6Url = "https://github.com/open62541/open62541/archive/refs/tags/v1.5.0.tar.gz"
@@ -9,9 +10,10 @@ $workRoot = "C:\open6-src"
 $archivePath = "$workRoot\open6.tar.gz"
 $sourceRoot = "$workRoot\source"
 $buildPath = "$workRoot\build"
-$installPath = "C:\open6"
+$installPath = [Environment]::GetEnvironmentVariable("OPEN6_HOME")
 
 Add-IssueSection "OPEN6 VERSION: $open6Version"
+Add-IssueSection "OPEN6_HOME: $installPath"
 
 if (Test-Path $workRoot) {
     Remove-Item -Path $workRoot -Recurse -Force

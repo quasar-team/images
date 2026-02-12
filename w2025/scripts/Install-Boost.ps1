@@ -4,14 +4,16 @@ Set-StrictMode -Version Latest
 . "$PSScriptRoot\Common.ps1"
 
 Assert-RequiredEnvVar -Name "ICS_REPO_DEPS_TOKEN"
+Assert-RequiredEnvVar -Name "BOOST_HOME"
 
 $boostVersion = "1.90.0"
 $boostUrl = "https://ics-deps-repo.web.cern.ch/quasar/boost/boost_1_90_0_vs2026_static.zip"
 $archivePath = "C:\boost.zip"
 $tempExtractPath = "C:\boost-extract"
-$installPath = "C:\boost"
+$installPath = [Environment]::GetEnvironmentVariable("BOOST_HOME")
 
 Add-IssueSection "BOOST VERSION: $boostVersion"
+Add-IssueSection "BOOST_HOME: $installPath"
 
 Write-Host "Downloading Boost package"
 Invoke-WebRequest -Headers @{ "PRIVATE-TOKEN" = "$env:ICS_REPO_DEPS_TOKEN" } -Uri $boostUrl -OutFile $archivePath
