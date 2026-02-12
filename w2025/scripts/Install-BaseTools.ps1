@@ -27,7 +27,7 @@ Invoke-Checked choco @('cache', 'remove')
 
 Write-Host "Installing Python packages"
 Invoke-Checked python @('-m', 'pip', 'install', '--upgrade', 'pip')
-Invoke-Checked python @('-m', 'pip', 'install', '--no-cache-dir', 'pybind11', 'pytest')
+Invoke-Checked python @('-m', 'pip', 'install', '--no-cache-dir', 'pybind11', 'pytest', 'colorama')
 
 $osCaption = (Get-CimInstance -ClassName Win32_OperatingSystem).Caption
 Add-IssueSection "OS: $osCaption"
