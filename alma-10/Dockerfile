@@ -11,7 +11,7 @@ RUN dnf install -q -y epel-release &&\
                    python-pip python-devel doxygen \
                    curl tar unzip which &&\
     dnf clean all &&\
-    pip install --quiet pre-commit clang-format pytest pybind11 colorama
+    pip install --quiet pre-commit clang-format pytest pybind11 colorama jinja2 lxml
 
 RUN echo "Generated: $(date '+%Y-%m-%d %H:%M')" >> /ISSUE &&\
     echo "*******************" >> /ISSUE &&\
