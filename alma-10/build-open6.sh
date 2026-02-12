@@ -21,7 +21,7 @@ cmake -S /tmp/open6-src -B /tmp/open6-src/build -G Ninja \
   -DUA_BUILD_SHARED_LIBS=OFF \
   -DCMAKE_INSTALL_PREFIX="${OPEN6_HOME}" \
   -DCMAKE_INSTALL_LIBDIR=lib
-cmake --build /tmp/open6-src/build --parallel "$(nproc)"  
-cmake --install /tmp/open6-src/build  
+cmake --build /tmp/open6-src/build --parallel "$(nproc)"
+cmake --install /tmp/open6-src/build
 
 rm -rf /tmp/open6-src

@@ -17,3 +17,11 @@ docker build -f <path/to/Dockerfile> -t <image-name>:<tag> .
 ## Contributing
 
 Contributions are welcome! Please open issues or submit pull requests.
+
+Before committing, run `pre-commit` checks locally:
+
+```bash
+pip install pre-commit
+pre-commit install
+pre-commit run --all-files
+```

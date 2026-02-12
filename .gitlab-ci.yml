@@ -46,7 +46,7 @@ Image Windows 2025:
     - |
       if ($env:CI_COMMIT_BRANCH -eq "main") {
         $dateTag = Get-Date -Format "yyyyMMdd"
-        docker tag $env:CI_REGISTRY_IMAGE/win2025-build:$env:CI_COMMIT_SHORT_SHA  $env:CI_REGISTRY_IMAGE/win2025-build:latest 
+        docker tag $env:CI_REGISTRY_IMAGE/win2025-build:$env:CI_COMMIT_SHORT_SHA  $env:CI_REGISTRY_IMAGE/win2025-build:latest
         docker tag $env:CI_REGISTRY_IMAGE/win2025-build:$env:CI_COMMIT_SHORT_SHA  $env:CI_REGISTRY_IMAGE/win2025-build:$dateTag
         docker push "$env:CI_REGISTRY_IMAGE/win2025-build:latest"
         docker push "$env:CI_REGISTRY_IMAGE/win2025-build:$dateTag"
@@ -55,5 +55,3 @@ Image Windows 2025:
         docker tag $env:CI_REGISTRY_IMAGE/win2025-build:$env:CI_COMMIT_SHORT_SHA  $env:CI_REGISTRY_IMAGE/win2025-build:$env:CI_COMMIT_TAG
         docker push "$env:CI_REGISTRY_IMAGE/win2025-build:$env:CI_COMMIT_TAG"
       }
-
-  

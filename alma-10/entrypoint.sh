@@ -5,4 +5,3 @@ echo
 cat /ISSUE
 
 exec "$@"
-
