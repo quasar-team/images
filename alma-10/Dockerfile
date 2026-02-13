@@ -7,11 +7,11 @@ ENV OPEN6_HOME=/opt/open6
 RUN dnf install -q -y epel-release &&\
     dnf update -q -y &&\
     dnf install -q -y cmake ninja-build g++ automake autoconf libtool \
-                   cppcheck nano git git-lfs python \
-                   python-pip python-devel doxygen \
+                   cppcheck nano git git-lfs patch graphviz xsd astyle \
+                   python python-pip python-devel doxygen \
                    curl tar unzip which &&\
     dnf clean all &&\
-    pip install --quiet pre-commit clang-format pytest pybind11 colorama jinja2 lxml
+    pip install --quiet pre-commit clang-format pytest pybind11 colorama jinja2 lxml pygit
 
 RUN echo "Generated: $(date '+%Y-%m-%d %H:%M')" >> /ISSUE &&\
     echo "*******************" >> /ISSUE &&\
