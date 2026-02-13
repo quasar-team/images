@@ -3,6 +3,7 @@ ARG ICS_REPO_DEPS_TOKEN
 ENV BOOST_HOME=/opt/boost
 ENV UNIFIED_AUTOMATION_HOME=/opt/unified-automation
 ENV OPEN6_HOME=/opt/open6
+ENV XERCES_C_HOME=/opt/xerces-c
 
 RUN dnf install -q -y epel-release &&\
     dnf update -q -y &&\
@@ -24,11 +25,12 @@ RUN echo "Generated: $(date '+%Y-%m-%d %H:%M')" >> /ISSUE &&\
     g++ --version &>> /ISSUE &&\
     echo "*******************" >> /ISSUE
 
-COPY build-boost.sh build-uasdk.sh build-open6.sh /tmp/
-RUN chmod +x /tmp/build-boost.sh /tmp/build-uasdk.sh /tmp/build-open6.sh &&\
+COPY build-boost.sh build-uasdk.sh build-open6.sh build-xerces-c.sh /tmp/
+RUN chmod +x /tmp/build-boost.sh /tmp/build-uasdk.sh /tmp/build-open6.sh /tmp/build-xerces-c.sh &&\
     /tmp/build-boost.sh &&\
     ICS_REPO_DEPS_TOKEN="$ICS_REPO_DEPS_TOKEN" /tmp/build-uasdk.sh &&\
-    /tmp/build-open6.sh
+    /tmp/build-open6.sh &&\
+    /tmp/build-xerces-c.sh
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
