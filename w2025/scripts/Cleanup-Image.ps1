@@ -35,7 +35,7 @@ $pathsToDelete = @(
     "C:\.env",
     "C:\Program Files (x86)\Microsoft\EdgeUpdate\Install",
     "C:\Program Files (x86)\Microsoft\EdgeUpdate\Download",
-    $pipCacheDir,
+    $pipCacheDir
 )
 
 foreach ($path in $pathsToDelete) {
