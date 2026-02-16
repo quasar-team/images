@@ -32,17 +32,10 @@ $pathsToDelete = @(
     "C:\Users\ContainerAdministrator\AppData\Local\Temp\chocolatey",
     "$env:TEMP\*",
     "C:\Windows\Temp\*",
-    "C:\log_*.txt",
-    "C:\log.zip",
-    "C:\log.txt",
     "C:\.env",
     "C:\Program Files (x86)\Microsoft\EdgeUpdate\Install",
     "C:\Program Files (x86)\Microsoft\EdgeUpdate\Download",
     $pipCacheDir,
-    "C:\Program Files (x86)\Microsoft Visual Studio\Installer",
-    "C:\ProgramData\Microsoft\VisualStudio\Packages",
-    "C:\ProgramData\Microsoft\VisualStudio\Setup",
-    "C:\ProgramData\Package Cache\*"
 )
 
 foreach ($path in $pathsToDelete) {
