@@ -9,6 +9,19 @@ if (-not (Test-Path -Path $issuePath)) {
     exit 1
 }
 
+# Add XSD_HOME/bin to PATH for subsequent commands.
+$xsdHome = [Environment]::GetEnvironmentVariable("XSD_HOME")
+if (-not $xsdHome) {
+    Write-Host "XSD_HOME environment variable is not set."
+    exit 1
+}
+$xsdBinPath = Join-Path $xsdHome "bin"
+if (-not (Test-Path -Path $xsdBinPath)) {
+    Write-Host "XSD bin directory does not exist at $xsdBinPath"
+    exit 1
+}
+$env:PATH = "$xsdBinPath;$env:PATH"
+
 Write-Host "Printing issue file"
 Get-Content $issuePath
 
