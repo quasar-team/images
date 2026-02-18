@@ -5,7 +5,6 @@ Set-StrictMode -Version Latest
 Assert-RequiredEnvVar -Name "XSD_HOME"
 
 $xsdVersion = "4.2.0"
-$xsdSourceUrl = "https://www.codesynthesis.com/download/xsd/4.2/xsd-4.2.0.tar.gz"
 $xsdWindowsPackageUrl = "https://www.codesynthesis.com/download/xsd/4.2/windows/windows10/x86_64/xsd-4.2.0-x86_64-windows10.zip"
 $workRoot = "C:\xsd-src"
 $archivePath = "$workRoot\xsd.zip"
@@ -21,7 +20,6 @@ if (Test-Path $workRoot) {
 New-Item -Path $extractPath -ItemType Directory -Force | Out-Null
 
 Write-Host "Downloading XSD package"
-Write-Host "Source release reference: $xsdSourceUrl"
 Invoke-WebRequest -Uri $xsdWindowsPackageUrl -OutFile $archivePath
 
 Write-Host "Extracting XSD package"

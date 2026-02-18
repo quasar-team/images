@@ -50,7 +50,7 @@ if ($null -eq $openSslLibPath) {
 }
 
 $requiredPaths = @(
-    "C:\ISSUE",
+    "C:\ISSUE\ISSUE.txt",
     (Join-Path $xsdHome "xsdcpp.exe"),
     (Join-Path $libXsdHome "include\xsd"),
     (Join-Path $libSslHome "include"),
@@ -79,5 +79,5 @@ foreach ($path in $requiredPaths) {
 & "$scriptRoot\scripts\Cleanup-Image.ps1"
 
 Write-Host "Windows image dependencies installed successfully."
-Write-Host "Issue file location: C:\ISSUE"
-Get-Content "C:\ISSUE"
+Write-Host "Issue file location: C:\ISSUE\ISSUE.txt"
+Get-Content "C:\ISSUE\ISSUE.txt"

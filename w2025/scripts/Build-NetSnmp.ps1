@@ -47,9 +47,14 @@ if (-not (Test-Path $openSslLibraryPath)) {
 }
 $openSslLibraryPath = $openSslLibraryPath -replace '\\', '/'
 
-$configure = 'cd /d "{0}" && perl win32\Configure --config=release --linktype=static --prefix="{1}" --with-ssl --with-sslincdir="{2}" --with-ssllibdir="{3}" --enable-blumenthal-aes' -f $netSnmpSourceDir.FullName, $prefixForConfigure, $openSslIncludePath, $openSslLibraryPath
-$build = 'cd /d "{0}" && nmake /nologo' -f $netSnmpSourceDir.FullName
-$install = 'cd /d "{0}" && nmake /nologo install && nmake /nologo install_devel' -f $netSnmpSourceDir.FullName
+$netSnmpWin32Dir = Join-Path $netSnmpSourceDir.FullName "win32"
+if (-not (Test-Path $netSnmpWin32Dir)) {
+    throw "Unable to locate Net-SNMP win32 build directory at '$netSnmpWin32Dir'."
+}
+
+$configure = 'cd /d "{0}" && perl Configure --config=release --linktype=static --prefix="{1}" --with-sdk --with-ssl --with-sslincdir="{2}" --with-ssllibdir="{3}" --enable-blumenthal-aes' -f $netSnmpWin32Dir, $prefixForConfigure, $openSslIncludePath, $openSslLibraryPath
+$build = 'cd /d "{0}" && nmake /nologo' -f $netSnmpWin32Dir
+$install = 'cd /d "{0}" && nmake /nologo install && nmake /nologo install_devel' -f $netSnmpWin32Dir
 
 Write-Host "Configuring and building Net-SNMP"
 Invoke-VsDevShellCommand -Command $configure

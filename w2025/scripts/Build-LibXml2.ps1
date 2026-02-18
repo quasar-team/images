@@ -38,7 +38,7 @@ if (Test-Path $installPath) {
     Remove-Item -Path $installPath -Recurse -Force
 }
 
-$configure = 'cmake -S "{0}" -B "{1}" -G Ninja -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX="{2}" -DLIBXML2_WITH_ICONV=OFF -DLIBXML2_WITH_ZLIB=OFF -DLIBXML2_WITH_LZMA=OFF -DLIBXML2_WITH_PROGRAMS=OFF -DLIBXML2_WITH_TESTS=OFF -DLIBXML2_WITH_PYTHON=OFF' -f $libXml2SourceDir.FullName, $buildPath, $installPath
+$configure = 'cmake -S "{0}" -B "{1}" -G Ninja -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX="{2}" -DLIBXML2_WITH_ICONV=OFF -DLIBXML2_WITH_ZLIB=OFF -DLIBXML2_WITH_PROGRAMS=OFF -DLIBXML2_WITH_TESTS=OFF -DLIBXML2_WITH_PYTHON=OFF' -f $libXml2SourceDir.FullName, $buildPath, $installPath
 $build = 'cmake --build "{0}" --parallel' -f $buildPath
 $install = 'cmake --install "{0}"' -f $buildPath
 

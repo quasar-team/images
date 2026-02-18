@@ -79,7 +79,13 @@ function Assert-RequiredEnvVar {
 }
 
 function Initialize-IssueFile {
-    Set-Content -Path "C:\ISSUE" -Value "" -NoNewline
+    # Create directory C:\ISSUE if it doesn't exist, then create or clear the ISSUE.txt file within it.
+    $issueDir = "C:\ISSUE"
+    if (-not (Test-Path -Path $issueDir)) {
+        New-Item -Path $issueDir -ItemType Directory | Out-Null
+    }
+    
+    Set-Content -Path "C:\ISSUE\ISSUE.txt" -Value "" -NoNewline
 }
 
 function Add-IssueSection {
@@ -87,6 +93,6 @@ function Add-IssueSection {
         [Parameter(Mandatory = $true)][string]$Line
     )
 
-    Add-Content -Path "C:\ISSUE" -Value $Line
-    Add-Content -Path "C:\ISSUE" -Value "*******************"
+    Add-Content -Path "C:\ISSUE\ISSUE.txt" -Value $Line
+    Add-Content -Path "C:\ISSUE\ISSUE.txt" -Value "*******************"
 }

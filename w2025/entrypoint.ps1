@@ -3,24 +3,29 @@ $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
 # For external commands, explicitly check $LASTEXITCODE after execution.
-$issuePath = "C:\ISSUE"
+$issuePath = "C:\ISSUE\ISSUE.txt"
 if (-not (Test-Path -Path $issuePath)) {
     Write-Host "ISSUE file is not available at $issuePath"
     exit 1
 }
 
-# Add XSD_HOME/bin to PATH for subsequent commands.
+# Add XSD tool directory to PATH for subsequent commands.
 $xsdHome = [Environment]::GetEnvironmentVariable("XSD_HOME")
 if (-not $xsdHome) {
     Write-Host "XSD_HOME environment variable is not set."
     exit 1
 }
-$xsdBinPath = Join-Path $xsdHome "bin"
-if (-not (Test-Path -Path $xsdBinPath)) {
-    Write-Host "XSD bin directory does not exist at $xsdBinPath"
+
+$xsdToolCandidates = @(
+    (Join-Path $xsdHome "xsdcpp.exe")
+)
+$xsdExecutable = $xsdToolCandidates | Where-Object { Test-Path -Path $_ } | Select-Object -First 1
+if (-not $xsdExecutable) {
+    Write-Host "Unable to locate xsdcpp.exe under $xsdHome"
     exit 1
 }
-$env:PATH = "$xsdBinPath;$env:PATH"
+$xsdToolsPath = Split-Path -Parent $xsdExecutable
+$env:PATH = "$xsdToolsPath;$env:PATH"
 
 Write-Host "Printing issue file"
 Get-Content $issuePath
@@ -34,7 +39,8 @@ if ($args.Count -eq 0) {
     exit 0
 }
 
-pwsh -Command $args
+$command = $args -join " "
+pwsh -NoLogo -NoProfile -Command $command
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Entrypoint executed command failed with code $LASTEXITCODE"
     exit $LASTEXITCODE
