@@ -25,15 +25,7 @@ function Get-VsDevCmdPath {
 
     $candidates = @(
         "$programFiles\Microsoft Visual Studio\2026\BuildTools\Common7\Tools\VsDevCmd.bat",
-        "$programFilesX86\Microsoft Visual Studio\2026\BuildTools\Common7\Tools\VsDevCmd.bat",
-        "$programFiles\Microsoft Visual Studio\2025\BuildTools\Common7\Tools\VsDevCmd.bat",
-        "$programFilesX86\Microsoft Visual Studio\2025\BuildTools\Common7\Tools\VsDevCmd.bat",
-        "$programFiles\Microsoft Visual Studio\2022\BuildTools\Common7\Tools\VsDevCmd.bat",
-        "$programFilesX86\Microsoft Visual Studio\2022\BuildTools\Common7\Tools\VsDevCmd.bat",
-        "$programFiles\Microsoft Visual Studio\2019\BuildTools\Common7\Tools\VsDevCmd.bat",
-        "$programFilesX86\Microsoft Visual Studio\2019\BuildTools\Common7\Tools\VsDevCmd.bat",
-        "$programFiles\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat",
-        "$programFilesX86\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
+        "$programFilesX86\Microsoft Visual Studio\2026\BuildTools\Common7\Tools\VsDevCmd.bat"
     )
 
     $vswherePath = "$programFilesX86\Microsoft Visual Studio\Installer\vswhere.exe"
