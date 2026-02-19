@@ -112,25 +112,30 @@ if (Test-Path $installPath) {
 $openSslHomeForCMake = $openSslHome -replace '\\', '/'
 $libXml2IncludeForCMake = $libXml2IncludePath -replace '\\', '/'
 $libXml2LibraryForCMake = $libXml2Library -replace '\\', '/'
-$configure = ('cmake -S "{0}" -B "{1}" -G Ninja -DCMAKE_BUILD_TYPE=Release ' +
-              '-DBUILD_SHARED_LIBS=OFF -DUASTACK_WITH_PKI_WIN32=ON ' +
-              '-DOPENSSL_ROOT_DIR="{2}" -DOPENSSL_USE_STATIC_LIBS=TRUE '+
-              '-DLIBXML2_INCLUDE_DIR="{3}" -DLIBXML2_LIBRARIES="{4}" ' +
-              '-DBUILD_SHARED_STACK=OFF -DUASTACK_CLIENTAPI_ENABLED=ON ' +
-              '-DBUILD_UACLIENTCPP=ON ' +
-              '-DCMAKE_C_FLAGS="/DLIBXML_STATIC /DLIBXSLT_STATIC /DXMLSEC_STATIC" ' +
-              '-DCMAKE_CXX_FLAGS="/DLIBXML_STATIC /DLIBXSLT_STATIC /DXMLSEC_STATIC /FIconio.h" ' +
-              '-DCMAKE_EXE_LINKER_FLAGS="/DEFAULTLIB:bcrypt.lib" '+
-              '-DCMAKE_INSTALL_PREFIX="{5}"') -f `
-                 $resolvedSourcePath, $buildPath, $openSslHomeForCMake, $libXml2IncludeForCMake, `
-                 $libXml2LibraryForCMake, $installPath
-$build = 'cmake --build "{0}" --parallel' -f $buildPath
-$install = 'cmake --install "{0}"' -f $buildPath
+$configureArgs = @(
+    '-S', $resolvedSourcePath,
+    '-B', $buildPath,
+    '-G', 'Ninja',
+    '-DCMAKE_BUILD_TYPE=Release',
+    '-DBUILD_SHARED_LIBS=OFF',
+    '-DUASTACK_WITH_PKI_WIN32=ON',
+    "-DOPENSSL_ROOT_DIR=$openSslHomeForCMake",
+    '-DOPENSSL_USE_STATIC_LIBS=TRUE',
+    "-DLIBXML2_INCLUDE_DIR=$libXml2IncludeForCMake",
+    "-DLIBXML2_LIBRARIES=$libXml2LibraryForCMake",
+    '-DBUILD_SHARED_STACK=OFF',
+    '-DUASTACK_CLIENTAPI_ENABLED=ON',
+    '-DBUILD_UACLIENTCPP=ON',
+    '-DCMAKE_C_FLAGS=/DLIBXML_STATIC /DLIBXSLT_STATIC /DXMLSEC_STATIC',
+    '-DCMAKE_CXX_FLAGS=/DLIBXML_STATIC /DLIBXSLT_STATIC /DXMLSEC_STATIC /FIconio.h',
+    '-DCMAKE_EXE_LINKER_FLAGS=/DEFAULTLIB:bcrypt.lib',
+    "-DCMAKE_INSTALL_PREFIX=$installPath"
+)
 
 Write-Host "Configuring and building UASDK"
-Invoke-VsDevShellCommand -Command $configure
-Invoke-VsDevShellCommand -Command $build
-Invoke-VsDevShellCommand -Command $install
+Invoke-Checked cmake $configureArgs
+Invoke-Checked cmake @('--build', $buildPath, '--parallel')
+Invoke-Checked cmake @('--install', $buildPath)
 
 $thirdPartyDir = Get-ChildItem -Path $sourceRoot -Directory -Recurse |
     Where-Object { $_.Name -eq "third-party" } |

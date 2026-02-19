@@ -38,13 +38,18 @@ if (Test-Path $installPath) {
     Remove-Item -Path $installPath -Recurse -Force
 }
 
-$configure = 'cmake -S "{0}" -B "{1}" -G Ninja -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX="{2}"' -f $xercesSourceDir.FullName, $buildPath, $installPath
-$build = 'cmake --build "{0}" --parallel' -f $buildPath
-$install = 'cmake --install "{0}"' -f $buildPath
+$configureArgs = @(
+    '-S', $xercesSourceDir.FullName,
+    '-B', $buildPath,
+    '-G', 'Ninja',
+    '-DCMAKE_BUILD_TYPE=Release',
+    '-DBUILD_SHARED_LIBS=OFF',
+    "-DCMAKE_INSTALL_PREFIX=$installPath"
+)
 
 Write-Host "Configuring and building Xerces-C++"
-Invoke-VsDevShellCommand -Command $configure
-Invoke-VsDevShellCommand -Command $build
-Invoke-VsDevShellCommand -Command $install
+Invoke-Checked cmake $configureArgs
+Invoke-Checked cmake @('--build', $buildPath, '--parallel')
+Invoke-Checked cmake @('--install', $buildPath)
 
 Remove-Item -Path $workRoot -Recurse -Force
