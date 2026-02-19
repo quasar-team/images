@@ -4,13 +4,19 @@ ENV BOOST_HOME=/opt/boost
 ENV UNIFIED_AUTOMATION_HOME=/opt/unified-automation
 ENV OPEN6_HOME=/opt/open6
 ENV XERCES_C_HOME=/opt/xerces-c
+ENV LIBSSL_HOME=/opt/libssl
+ENV LIBXML2_HOME=/opt/libxml2
+ENV NET_SNMP_HOME=/opt/net-snmp
+ENV XSD_HOME=/opt/xsd
+ENV LIBXSD_HOME=/opt/libxsd
+ENV PATH=/opt/xsd:${PATH}
 
 RUN dnf install -q -y epel-release &&\
     dnf update -q -y &&\
     dnf install -q -y cmake ninja-build g++ automake autoconf libtool \
                    cppcheck nano git git-lfs patch graphviz xsd astyle \
-                   python python-pip python-devel doxygen \
-                   curl tar unzip which rpm-build&&\
+                   python python-pip python-devel doxygen perl \
+                   curl tar unzip which rpm-build &&\
     dnf clean all &&\
     pip install --quiet pre-commit clang-format pytest pybind11 colorama jinja2 lxml pygit
 
@@ -25,12 +31,16 @@ RUN echo "Generated: $(date '+%Y-%m-%d %H:%M')" >> /ISSUE &&\
     g++ --version &>> /ISSUE &&\
     echo "*******************" >> /ISSUE
 
-COPY build-boost.sh build-uasdk.sh build-open6.sh build-xerces-c.sh /tmp/
-RUN chmod +x /tmp/build-boost.sh /tmp/build-uasdk.sh /tmp/build-open6.sh /tmp/build-xerces-c.sh &&\
-    /tmp/build-boost.sh &&\
-    ICS_REPO_DEPS_TOKEN="$ICS_REPO_DEPS_TOKEN" /tmp/build-uasdk.sh &&\
-    /tmp/build-open6.sh &&\
-    /tmp/build-xerces-c.sh
+COPY build-boost.sh build-uasdk.sh build-open6.sh build-xerces-c.sh build-openssl.sh build-libxml2.sh build-net-snmp.sh install-libxsd.sh /tmp/
+RUN chmod +x /tmp/build-boost.sh /tmp/build-uasdk.sh /tmp/build-open6.sh /tmp/build-xerces-c.sh /tmp/build-openssl.sh /tmp/build-libxml2.sh /tmp/build-net-snmp.sh /tmp/install-libxsd.sh
+RUN /tmp/build-openssl.sh
+RUN /tmp/build-libxml2.sh
+RUN /tmp/build-net-snmp.sh
+RUN /tmp/install-libxsd.sh
+RUN /tmp/build-boost.sh
+RUN ICS_REPO_DEPS_TOKEN="$ICS_REPO_DEPS_TOKEN" /tmp/build-uasdk.sh
+RUN /tmp/build-open6.sh
+RUN /tmp/build-xerces-c.sh
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
