@@ -21,7 +21,7 @@ Invoke-Checked choco @('install', '-y', '--no-progress', 'visualstudio2026-workl
 
 Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
 refreshenv
-$env:PATH = "C:\Program Files\CMake\bin\;" + $env:PATH" 
+$env:PATH = "C:\Program Files\CMake\bin\;" + $env:PATH 
 
 Write-Host "Cleaning Chocolatey cache"
 Invoke-Checked choco @('cache', 'remove')
