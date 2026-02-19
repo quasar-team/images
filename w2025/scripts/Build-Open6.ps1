@@ -41,21 +41,16 @@ if (Test-Path $installPath) {
 $openSslHomeForCMake = $env:LIBSSL_HOME -replace '\\', '/'
 
 
-$configureArgs = @(
-    '-S', $open6SourceDir.FullName,
-    '-B', $buildPath,
-    '-G', 'Ninja',
-    '-DCMAKE_BUILD_TYPE=Release',
-    '-DBUILD_SHARED_LIBS=OFF',
-    "-DOPENSSL_ROOT_DIR=$openSslHomeForCMake",
-    '-DOPENSSL_USE_STATIC_LIBS=TRUE',
-    '-DUA_ENABLE_ENCRYPTION=OPENSSL',
-    "-DCMAKE_INSTALL_PREFIX=$installPath"
-)
+$configure = ('cmake -S "{0}" -B "{1}" -G Ninja -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DOPENSSL_ROOT_DIR="{3}" ' +
+   '-DOPENSSL_USE_STATIC_LIBS=TRUE -DUA_ENABLE_ENCRYPTION=OPENSSL ' +
+   '-DCMAKE_INSTALL_PREFIX="{2}"') -f`
+  $open6SourceDir.FullName, $buildPath, $installPath, $openSslHomeForCMake
+$build = 'cmake --build "{0}" --parallel' -f $buildPath
+$install = 'cmake --install "{0}"' -f $buildPath
 
 Write-Host "Configuring and building Open6"
-Invoke-Checked cmake $configureArgs
-Invoke-Checked cmake @('--build', $buildPath, '--parallel')
-Invoke-Checked cmake @('--install', $buildPath)
+Invoke-VsDevShellCommand -Command $configure
+Invoke-VsDevShellCommand -Command $build
+Invoke-VsDevShellCommand -Command $install
 
 Remove-Item -Path $workRoot -Recurse -Force
