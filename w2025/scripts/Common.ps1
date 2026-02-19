@@ -1,6 +1,9 @@
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
+# Tell nmake to run in parallel where possible to speed up builds
+$env:CL = "/MP"
+
 function Invoke-Checked {
     param(
         [Parameter(Mandatory = $true)][string]$Command,
@@ -25,15 +28,7 @@ function Get-VsDevCmdPath {
 
     $candidates = @(
         "$programFiles\Microsoft Visual Studio\2026\BuildTools\Common7\Tools\VsDevCmd.bat",
-        "$programFilesX86\Microsoft Visual Studio\2026\BuildTools\Common7\Tools\VsDevCmd.bat",
-        "$programFiles\Microsoft Visual Studio\2025\BuildTools\Common7\Tools\VsDevCmd.bat",
-        "$programFilesX86\Microsoft Visual Studio\2025\BuildTools\Common7\Tools\VsDevCmd.bat",
-        "$programFiles\Microsoft Visual Studio\2022\BuildTools\Common7\Tools\VsDevCmd.bat",
-        "$programFilesX86\Microsoft Visual Studio\2022\BuildTools\Common7\Tools\VsDevCmd.bat",
-        "$programFiles\Microsoft Visual Studio\2019\BuildTools\Common7\Tools\VsDevCmd.bat",
-        "$programFilesX86\Microsoft Visual Studio\2019\BuildTools\Common7\Tools\VsDevCmd.bat",
-        "$programFiles\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat",
-        "$programFilesX86\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
+        "$programFilesX86\Microsoft Visual Studio\2026\BuildTools\Common7\Tools\VsDevCmd.bat"
     )
 
     $vswherePath = "$programFilesX86\Microsoft Visual Studio\Installer\vswhere.exe"
@@ -87,7 +82,13 @@ function Assert-RequiredEnvVar {
 }
 
 function Initialize-IssueFile {
-    Set-Content -Path "C:\ISSUE" -Value "" -NoNewline
+    # Create directory C:\ISSUE if it doesn't exist, then create or clear the ISSUE.txt file within it.
+    $issueDir = "C:\ISSUE"
+    if (-not (Test-Path -Path $issueDir)) {
+        New-Item -Path $issueDir -ItemType Directory | Out-Null
+    }
+    
+    Set-Content -Path "C:\ISSUE\ISSUE.txt" -Value "" -NoNewline
 }
 
 function Add-IssueSection {
@@ -95,6 +96,6 @@ function Add-IssueSection {
         [Parameter(Mandatory = $true)][string]$Line
     )
 
-    Add-Content -Path "C:\ISSUE" -Value $Line
-    Add-Content -Path "C:\ISSUE" -Value "*******************"
+    Add-Content -Path "C:\ISSUE\ISSUE.txt" -Value $Line
+    Add-Content -Path "C:\ISSUE\ISSUE.txt" -Value "*******************"
 }
