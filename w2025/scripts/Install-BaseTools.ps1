@@ -9,7 +9,7 @@ Set-ExecutionPolicy Bypass -Scope Process -Force
 Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 
 Write-Host "Installing base tools"
-Invoke-Checked choco @('install', '-y', '--no-progress', 'powershell-core', 'python', 'strawberryperl', 'git', 'git-lfs.install', 'nano', '7zip')
+Invoke-Checked choco @('install', '-y', '--no-progress', 'powershell-core', 'python', 'strawberryperl', 'git', 'git-lfs.install', 'nano', '7zip', 'wixtoolset')
 
 Write-Host "Installing CMake and Ninja"
 Invoke-Checked choco @('install', '-y', '--no-progress', 'cmake', '--installargs', 'ADD_CMAKE_TO_PATH=System')

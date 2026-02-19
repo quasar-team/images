@@ -11,6 +11,9 @@ ENV XSD_HOME=/opt/xsd
 ENV LIBXSD_HOME=/opt/libxsd
 ENV PATH=/opt/xsd:${PATH}
 
+COPY build-boost.sh build-uasdk.sh build-open6.sh build-xerces-c.sh build-openssl.sh build-libxml2.sh build-net-snmp.sh install-libxsd.sh /tmp/
+COPY entrypoint.sh /entrypoint.sh
+
 RUN dnf install -q -y epel-release &&\
     dnf update -q -y &&\
     dnf install -q -y cmake ninja-build g++ automake autoconf libtool \
@@ -18,9 +21,8 @@ RUN dnf install -q -y epel-release &&\
                    python python-pip python-devel doxygen perl \
                    curl tar unzip which rpm-build &&\
     dnf clean all &&\
-    pip install --quiet pre-commit clang-format pytest pybind11 colorama jinja2 lxml pygit
-
-RUN echo "Generated: $(date '+%Y-%m-%d %H:%M')" >> /ISSUE &&\
+    pip install --quiet pre-commit clang-format pytest pybind11 colorama jinja2 lxml pygit &&\
+    echo "Generated: $(date '+%Y-%m-%d %H:%M')" >> /ISSUE &&\
     echo "*******************" >> /ISSUE &&\
     uname -a &>> /ISSUE &&\
     echo "*******************" >> /ISSUE &&\
@@ -29,19 +31,14 @@ RUN echo "Generated: $(date '+%Y-%m-%d %H:%M')" >> /ISSUE &&\
     cmake --version &>> /ISSUE &&\
     echo "*******************" >> /ISSUE &&\
     g++ --version &>> /ISSUE &&\
-    echo "*******************" >> /ISSUE
-
-COPY build-boost.sh build-uasdk.sh build-open6.sh build-xerces-c.sh build-openssl.sh build-libxml2.sh build-net-snmp.sh install-libxsd.sh /tmp/
-RUN chmod +x /tmp/build-boost.sh /tmp/build-uasdk.sh /tmp/build-open6.sh /tmp/build-xerces-c.sh /tmp/build-openssl.sh /tmp/build-libxml2.sh /tmp/build-net-snmp.sh /tmp/install-libxsd.sh
-RUN /tmp/build-openssl.sh
-RUN /tmp/build-libxml2.sh
-RUN /tmp/build-net-snmp.sh
-RUN /tmp/install-libxsd.sh
-RUN /tmp/build-boost.sh
-RUN ICS_REPO_DEPS_TOKEN="$ICS_REPO_DEPS_TOKEN" /tmp/build-uasdk.sh
-RUN /tmp/build-open6.sh
-RUN /tmp/build-xerces-c.sh
-
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+    echo "*******************" >> /ISSUE &&\
+    chmod +x /tmp/build-boost.sh /tmp/build-uasdk.sh /tmp/build-open6.sh /tmp/build-xerces-c.sh /tmp/build-openssl.sh /tmp/build-libxml2.sh /tmp/build-net-snmp.sh /tmp/install-libxsd.sh /entrypoint.sh &&\
+    /tmp/build-openssl.sh &&\
+    /tmp/build-libxml2.sh &&\
+    /tmp/build-net-snmp.sh &&\
+    /tmp/install-libxsd.sh &&\
+    /tmp/build-boost.sh &&\
+    ICS_REPO_DEPS_TOKEN="$ICS_REPO_DEPS_TOKEN" /tmp/build-uasdk.sh &&\
+    /tmp/build-open6.sh &&\
+    /tmp/build-xerces-c.sh
 ENTRYPOINT ["/entrypoint.sh"]
