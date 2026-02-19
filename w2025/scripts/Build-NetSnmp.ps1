@@ -52,6 +52,21 @@ if (-not (Test-Path $netSnmpWin32Dir)) {
     throw "Unable to locate Net-SNMP win32 build directory at '$netSnmpWin32Dir'."
 }
 
+# Net-SNMP win32 templates miss crypt32.lib, which is required by OpenSSL 3
+# for Cert* symbols used by libcrypto on Windows.
+$win32TemplateFiles = Get-ChildItem -Path $netSnmpWin32Dir -Filter "*.in" -Recurse
+foreach ($template in $win32TemplateFiles) {
+    $content = Get-Content -Path $template.FullName -Raw
+    $updatedContent = [regex]::Replace(
+        $content,
+        'advapi32\.lib ws2_32\.lib kernel32\.lib user32\.lib(?! crypt32\.lib)',
+        'advapi32.lib ws2_32.lib kernel32.lib user32.lib crypt32.lib'
+    )
+    if ($updatedContent -ne $content) {
+        Set-Content -Path $template.FullName -Value $updatedContent -Encoding ascii
+    }
+}
+
 $configure = 'cd /d "{0}" && perl Configure --config=release --linktype=static --prefix="{1}" --with-sdk --with-ssl --with-sslincdir="{2}" --with-ssllibdir="{3}" --enable-blumenthal-aes' -f $netSnmpWin32Dir, $prefixForConfigure, $openSslIncludePath, $openSslLibraryPath
 $build = 'cd /d "{0}" && nmake /nologo' -f $netSnmpWin32Dir
 $install = 'cd /d "{0}" && nmake /nologo install && nmake /nologo install_devel' -f $netSnmpWin32Dir

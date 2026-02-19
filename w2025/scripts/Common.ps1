@@ -1,6 +1,9 @@
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
+# Tell nmake to run in parallel where possible to speed up builds
+$env:CL = "/MP"
+
 function Invoke-Checked {
     param(
         [Parameter(Mandatory = $true)][string]$Command,
