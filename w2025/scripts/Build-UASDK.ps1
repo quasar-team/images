@@ -22,41 +22,11 @@ $libXml2Home = [Environment]::GetEnvironmentVariable("LIBXML2_HOME")
 Add-IssueSection "UNIFIED AUTOMATION UASDK VERSION: $uasdkVersion"
 Add-IssueSection "UNIFIED_AUTOMATION_HOME: $installPath"
 
-$openSslIncludePath = Join-Path $openSslHome "include"
-$openSslLibraryDirCandidates = @(
-    (Join-Path $openSslHome "lib"),
-    (Join-Path $openSslHome "lib64")
-)
-$openSslLibraryDir = $openSslLibraryDirCandidates | Where-Object { Test-Path $_ } | Select-Object -First 1
-
-if (-not (Test-Path $openSslIncludePath)) {
-    throw "Unable to locate OpenSSL include directory at '$openSslIncludePath'."
-}
-if ($null -eq $openSslLibraryDir) {
-    throw "Unable to locate OpenSSL libraries under '$openSslHome\\lib' or '$openSslHome\\lib64'."
-}
-
-$openSslSslLibrary = Join-Path $openSslLibraryDir "libssl.lib"
-$openSslCryptoLibrary = Join-Path $openSslLibraryDir "libcrypto.lib"
-foreach ($libraryPath in @($openSslSslLibrary, $openSslCryptoLibrary)) {
-    if (-not (Test-Path $libraryPath)) {
-        throw "Unable to locate required OpenSSL library '$libraryPath'."
-    }
-}
-
 $libXml2IncludePathCandidates = @(
-    (Join-Path $libXml2Home "include\libxml2"),
     (Join-Path $libXml2Home "include")
 )
 $libXml2IncludePath = $libXml2IncludePathCandidates | Where-Object { Test-Path $_ } | Select-Object -First 1
 $libXml2LibraryDir = Join-Path $libXml2Home "lib"
-
-if ($null -eq $libXml2IncludePath) {
-    throw "Unable to locate libxml2 include directory under '$libXml2Home\\include'."
-}
-if (-not (Test-Path $libXml2LibraryDir)) {
-    throw "Unable to locate libxml2 library directory at '$libXml2LibraryDir'."
-}
 
 $libXml2Library = $null
 $preferredLibXml2LibraryNames = @("libxml2.lib", "libxml2_a.lib", "libxml2s.lib")
@@ -66,19 +36,6 @@ foreach ($libraryName in $preferredLibXml2LibraryNames) {
         $libXml2Library = $candidate
         break
     }
-}
-
-if ($null -eq $libXml2Library) {
-    $fallbackLibXml2Library = Get-ChildItem -Path $libXml2LibraryDir -Filter "libxml2*.lib" -File -ErrorAction SilentlyContinue |
-        Sort-Object -Property Name |
-        Select-Object -First 1
-    if ($null -ne $fallbackLibXml2Library) {
-        $libXml2Library = $fallbackLibXml2Library.FullName
-    }
-}
-
-if ($null -eq $libXml2Library) {
-    throw "Unable to locate a libxml2 static library in '$libXml2LibraryDir'."
 }
 
 if (Test-Path $workRoot) {
@@ -110,8 +67,8 @@ if (Test-Path $installPath) {
 }
 
 $openSslHomeForCMake = $openSslHome -replace '\\', '/'
-$libXml2IncludeForCMake = $libXml2IncludePath -replace '\\', '/'
-$libXml2LibraryForCMake = $libXml2Library -replace '\\', '/'
+$libXml2HomeForCMake = $libXml2Home -replace '\\', '/'
+
 $configureArgs = @(
     '-S', $resolvedSourcePath,
     '-B', $buildPath,
@@ -121,8 +78,7 @@ $configureArgs = @(
     '-DUASTACK_WITH_PKI_WIN32=ON',
     "-DOPENSSL_ROOT_DIR=$openSslHomeForCMake",
     '-DOPENSSL_USE_STATIC_LIBS=TRUE',
-    "-DLIBXML2_INCLUDE_DIR=$libXml2IncludeForCMake",
-    "-DLIBXML2_LIBRARIES=$libXml2LibraryForCMake",
+    "-DLIBXML2_ROOT_DIR=$libXml2HomeForCMake",
     '-DBUILD_SHARED_STACK=OFF',
     '-DUASTACK_CLIENTAPI_ENABLED=ON',
     '-DBUILD_UACLIENTCPP=ON',
