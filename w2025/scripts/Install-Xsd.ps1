@@ -36,9 +36,9 @@ New-Item -Path $installPath -ItemType Directory -Force | Out-Null
 
 $xsdExePath = Join-Path $installPath "xsd.exe"
 Copy-Item -Path $xsdExecutable.FullName -Destination $xsdExePath -Force
-Rename-Item -Path $xsdExePath -NewName "xsdcpp.exe"
+Rename-Item -Path $xsdExePath -NewName "xsdcxx.exe"
 
-$xsdCppPath = Join-Path $installPath "xsdcpp.exe"
+$xsdCppPath = Join-Path $installPath "xsdcxx.exe"
 Add-IssueSection "XSD EXECUTABLE: $xsdCppPath"
 
 Remove-Item -Path $workRoot -Recurse -Force
