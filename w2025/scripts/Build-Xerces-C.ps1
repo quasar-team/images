@@ -1,7 +1,6 @@
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
-. "$PSScriptRoot\Common.ps1"
 Assert-RequiredEnvVar -Name "XERCES_C_HOME"
 
 $xercesCVersion = "3.3.0"

@@ -1,7 +1,6 @@
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
-. "$PSScriptRoot\Common.ps1"
 Assert-RequiredEnvVar -Name "NET_SNMP_HOME"
 Assert-RequiredEnvVar -Name "LIBSSL_HOME"
 

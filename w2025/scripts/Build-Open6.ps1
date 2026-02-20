@@ -1,7 +1,6 @@
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
-. "$PSScriptRoot\Common.ps1"
 Assert-RequiredEnvVar -Name "OPEN6_HOME"
 
 $open6Version = "1.5.0"

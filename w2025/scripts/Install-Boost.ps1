@@ -1,7 +1,6 @@
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
-. "$PSScriptRoot\Common.ps1"
 
 Assert-RequiredEnvVar -Name "ICS_REPO_DEPS_TOKEN"
 Assert-RequiredEnvVar -Name "BOOST_HOME"

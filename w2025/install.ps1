@@ -29,27 +29,28 @@ $netSnmpHome = [Environment]::GetEnvironmentVariable("NET_SNMP_HOME")
 $xsdHome = [Environment]::GetEnvironmentVariable("XSD_HOME")
 $libXsdHome = [Environment]::GetEnvironmentVariable("LIBXSD_HOME")
 
-& "$scriptRoot\scripts\Install-BaseTools.ps1"
-& "$scriptRoot\scripts\Install-Xsd.ps1"
-& "$scriptRoot\scripts\Install-LibXsd.ps1"
+. "$scriptRoot\scripts\Install-BaseTools.ps1"
+. "$scriptRoot\scripts\Install-Xsd.ps1"
+. "$scriptRoot\scripts\Install-LibXsd.ps1"
 
+. "$scriptRoot\scripts\Install-SpecialDeps.ps1"
 # Note: Building openssl is very slow. Speed up via meson/ninja not possible.
 # See: https://github.com/openssl/openssl/issues/16812
-& "$scriptRoot\scripts\Build-OpenSSL.ps1"
-
-& "$scriptRoot\scripts\Build-LibXml2.ps1"
-
+. "$scriptRoot\scripts\Build-OpenSSL.ps1"
 # Also quite slow, it relies in nmake, no cmake support
-& "$scriptRoot\scripts\Build-NetSnmp.ps1"
+. "$scriptRoot\scripts\Build-NetSnmp.ps1"
+. "$scriptRoot\scripts\Uninstall-SpecialDeps.ps1"
+
+. "$scriptRoot\scripts\Build-LibXml2.ps1"
 
 # Boost installed rather than built from source due to b2 incompatibility
 # with Visual Studio 2026; b2 fixed in master to support latest MSVC toolset.
 # Change to Build script with Boost 9.0.1 or later.
-& "$scriptRoot\scripts\Install-Boost.ps1"
+. "$scriptRoot\scripts\Install-Boost.ps1"
 
-& "$scriptRoot\scripts\Build-UASDK.ps1"
-& "$scriptRoot\scripts\Build-Open6.ps1"
-& "$scriptRoot\scripts\Build-Xerces-C.ps1"
+. "$scriptRoot\scripts\Build-UASDK.ps1"
+. "$scriptRoot\scripts\Build-Open6.ps1"
+. "$scriptRoot\scripts\Build-Xerces-C.ps1"
 
 $openSslLibPathCandidates = @(
     (Join-Path $libSslHome "lib"),

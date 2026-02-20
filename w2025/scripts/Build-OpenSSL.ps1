@@ -1,7 +1,6 @@
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
-. "$PSScriptRoot\Common.ps1"
 Assert-RequiredEnvVar -Name "LIBSSL_HOME"
 
 $openSslVersion = "3.5.5"
@@ -47,3 +46,4 @@ Invoke-VsDevShellCommand -Command $build
 Invoke-VsDevShellCommand -Command $install
 
 Remove-Item -Path $workRoot -Recurse -Force
+

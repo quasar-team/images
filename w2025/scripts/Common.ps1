@@ -87,7 +87,7 @@ function Initialize-IssueFile {
     if (-not (Test-Path -Path $issueDir)) {
         New-Item -Path $issueDir -ItemType Directory | Out-Null
     }
-    
+
     Set-Content -Path "C:\ISSUE\ISSUE.txt" -Value "" -NoNewline
 }
 

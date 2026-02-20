@@ -1,3 +1,6 @@
+# This script sets up the local environment variables for the dependencies installed in C:/ and then starts a PowerShell session with those variables set.
+# Useful for setting a local environment.
+
 $env:NET_SNMP_HOME="C:/net-snmp"
 $env:LIBSSL_HOME="c:/libssl"
 $env:BOOST_HOME="C:/boost"

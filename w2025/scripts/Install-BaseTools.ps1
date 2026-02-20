@@ -1,7 +1,6 @@
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
-. "$PSScriptRoot\Common.ps1"
 
 Write-Host "Installing Chocolatey"
 Set-ExecutionPolicy Bypass -Scope Process -Force
@@ -9,7 +8,7 @@ Set-ExecutionPolicy Bypass -Scope Process -Force
 Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 
 Write-Host "Installing base tools"
-Invoke-Checked choco @('install', '-y', '--no-progress', 'powershell-core', 'python', 'strawberryperl', 'git', 'git-lfs.install', 'nano', '7zip')
+Invoke-Checked choco @('install', '-y', '--no-progress', 'powershell-core', 'python', 'git', 'git-lfs.install', 'nano', '7zip', 'wixtoolset')
 
 Write-Host "Installing CMake and Ninja"
 Invoke-Checked choco @('install', '-y', '--no-progress', 'cmake', '--installargs', 'ADD_CMAKE_TO_PATH=System')
@@ -21,6 +20,7 @@ Invoke-Checked choco @('install', '-y', '--no-progress', 'visualstudio2026-workl
 
 Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
 refreshenv
+$env:PATH = "C:\Program Files\CMake\bin\;" + $env:PATH
 
 Write-Host "Cleaning Chocolatey cache"
 Invoke-Checked choco @('cache', 'remove')
