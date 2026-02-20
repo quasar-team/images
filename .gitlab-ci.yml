@@ -42,8 +42,8 @@ Deploy Image Alma 10:
   script:
     - export DATE_TAG="$(date +%Y%m%d)" && echo "Date TAG --- $DATE_TAG"
     - skopeo login --username "$CI_REGISTRY_USER" --password "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
-    - skopeo copy "${CI_REGISTRY_IMAGE}/alma-10-build:$env:CI_COMMIT_SHORT_SHA" "${CI_REGISTRY_IMAGE}/alma-10-build:latest"
-    - skopeo copy "${CI_REGISTRY_IMAGE}/alma-10-build:$env:CI_COMMIT_SHORT_SHA" "${CI_REGISTRY_IMAGE}/alma-10-build:${DATE_TAG}"
+    - skopeo copy docker://"${CI_REGISTRY_IMAGE}/alma-10-build:$env:CI_COMMIT_SHORT_SHA" docker://"${CI_REGISTRY_IMAGE}/alma-10-build:latest"
+    - skopeo copy docker://"${CI_REGISTRY_IMAGE}/alma-10-build:$env:CI_COMMIT_SHORT_SHA" docker://"${CI_REGISTRY_IMAGE}/alma-10-build:${DATE_TAG}"
 
 Deploy Image Windows 2025:
   stage: deploy
@@ -56,5 +56,5 @@ Deploy Image Windows 2025:
   script:
     - export DATE_TAG="$(date +%Y%m%d)" && echo "Date TAG --- $DATE_TAG"
     - skopeo login --username "$CI_REGISTRY_USER" --password "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
-    - skopeo copy "${CI_REGISTRY_IMAGE}/win2025-build:$env:CI_COMMIT_SHORT_SHA" "${CI_REGISTRY_IMAGE}/win2025-build:latest"
-    - skopeo copy "${CI_REGISTRY_IMAGE}/win2025-build:$env:CI_COMMIT_SHORT_SHA" "${CI_REGISTRY_IMAGE}/win2025-build:${DATE_TAG}"
+    - skopeo copy docker://"${CI_REGISTRY_IMAGE}/win2025-build:$env:CI_COMMIT_SHORT_SHA" docker://"${CI_REGISTRY_IMAGE}/win2025-build:latest"
+    - skopeo copy docker://"${CI_REGISTRY_IMAGE}/win2025-build:$env:CI_COMMIT_SHORT_SHA" docker://"${CI_REGISTRY_IMAGE}/win2025-build:${DATE_TAG}"
