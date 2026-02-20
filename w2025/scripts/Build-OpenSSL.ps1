@@ -4,9 +4,6 @@ Set-StrictMode -Version Latest
 . "$PSScriptRoot\Common.ps1"
 Assert-RequiredEnvVar -Name "LIBSSL_HOME"
 
-Invoke-Checked choco @('install', '-y', '--no-progress', 'strawberryperl', 'nasm')
-refreshenv
-
 $openSslVersion = "3.5.5"
 $openSslUrl = "https://github.com/openssl/openssl/releases/download/openssl-3.5.5/openssl-3.5.5.tar.gz"
 $workRoot = "C:\openssl-src"
@@ -51,5 +48,3 @@ Invoke-VsDevShellCommand -Command $install
 
 Remove-Item -Path $workRoot -Recurse -Force
 
-Invoke-Checked choco @('uninstall', '-y', '--no-progress', 'strawberryperl', 'nasm')
-refreshenv

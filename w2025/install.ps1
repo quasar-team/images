@@ -33,14 +33,15 @@ $libXsdHome = [Environment]::GetEnvironmentVariable("LIBXSD_HOME")
 . "$scriptRoot\scripts\Install-Xsd.ps1"
 . "$scriptRoot\scripts\Install-LibXsd.ps1"
 
+. "$scriptRoot\scripts\Install-SpecialDeps.ps1"
 # Note: Building openssl is very slow. Speed up via meson/ninja not possible.
 # See: https://github.com/openssl/openssl/issues/16812
 . "$scriptRoot\scripts\Build-OpenSSL.ps1"
-
-. "$scriptRoot\scripts\Build-LibXml2.ps1"
-
 # Also quite slow, it relies in nmake, no cmake support
 . "$scriptRoot\scripts\Build-NetSnmp.ps1"
+. "$scriptRoot\scripts\Uninstall-SpecialDeps.ps1"
+
+. "$scriptRoot\scripts\Build-LibXml2.ps1"
 
 # Boost installed rather than built from source due to b2 incompatibility
 # with Visual Studio 2026; b2 fixed in master to support latest MSVC toolset.
