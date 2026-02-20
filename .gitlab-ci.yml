@@ -13,3 +13,10 @@ workflow:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
       when: always
     - when: never
+
+# Empty job, as gitlab-ci requires at least one job
+empty:
+  stage: build
+  script: exit 1
+  rules:
+    - when: never
