@@ -1,7 +1,6 @@
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
-. "$PSScriptRoot\Common.ps1"
 Assert-RequiredEnvVar -Name "LIBSSL_HOME"
 
 $openSslVersion = "3.5.5"

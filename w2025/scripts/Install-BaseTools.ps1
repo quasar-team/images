@@ -1,7 +1,6 @@
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
-. "$PSScriptRoot\Common.ps1"
 
 Write-Host "Installing Chocolatey"
 Set-ExecutionPolicy Bypass -Scope Process -Force

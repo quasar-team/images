@@ -1,7 +1,6 @@
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
-. "$PSScriptRoot\Common.ps1"
 Assert-RequiredEnvVar -Name "LIBXSD_HOME"
 
 $libXsdVersion = "4.2.0"
