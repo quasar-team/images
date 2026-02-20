@@ -46,4 +46,3 @@ Invoke-VsDevShellCommand -Command $build
 Invoke-VsDevShellCommand -Command $install
 
 Remove-Item -Path $workRoot -Recurse -Force
-
