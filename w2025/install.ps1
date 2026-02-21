@@ -17,7 +17,6 @@ Assert-RequiredEnvVar -Name "LIBSSL_HOME"
 Assert-RequiredEnvVar -Name "LIBXML2_HOME"
 Assert-RequiredEnvVar -Name "NET_SNMP_HOME"
 Assert-RequiredEnvVar -Name "XSD_HOME"
-Assert-RequiredEnvVar -Name "LIBXSD_HOME"
 
 $boostHome = [Environment]::GetEnvironmentVariable("BOOST_HOME")
 $unifiedAutomationHome = [Environment]::GetEnvironmentVariable("UNIFIED_AUTOMATION_HOME")
@@ -27,7 +26,6 @@ $libSslHome = [Environment]::GetEnvironmentVariable("LIBSSL_HOME")
 $libXml2Home = [Environment]::GetEnvironmentVariable("LIBXML2_HOME")
 $netSnmpHome = [Environment]::GetEnvironmentVariable("NET_SNMP_HOME")
 $xsdHome = [Environment]::GetEnvironmentVariable("XSD_HOME")
-$libXsdHome = [Environment]::GetEnvironmentVariable("LIBXSD_HOME")
 
 . "$scriptRoot\scripts\Install-BaseTools.ps1"
 . "$scriptRoot\scripts\Install-Xsd.ps1"
@@ -64,7 +62,7 @@ if ($null -eq $openSslLibPath) {
 $requiredPaths = @(
     "C:\ISSUE\ISSUE.txt",
     (Join-Path $xsdHome "xsdcxx.exe"),
-    (Join-Path $libXsdHome "include\xsd"),
+    (Join-Path $xsdHome "include\xsd"),
     (Join-Path $libSslHome "include"),
     (Join-Path $openSslLibPath "libcrypto.lib"),
     (Join-Path $openSslLibPath "libssl.lib"),

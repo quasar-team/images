@@ -7,7 +7,6 @@ ENV LIBSSL_HOME=C:\\libssl
 ENV LIBXML2_HOME=C:\\libxml2
 ENV NET_SNMP_HOME=C:\\net-snmp
 ENV XSD_HOME=C:\\xsd
-ENV LIBXSD_HOME=C:\\libxsd
 
 WORKDIR C:\\
 COPY . .
