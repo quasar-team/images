@@ -63,7 +63,7 @@ if ($null -eq $openSslLibPath) {
 
 $requiredPaths = @(
     "C:\ISSUE\ISSUE.txt",
-    (Join-Path $xsdHome "xsdcpp.exe"),
+    (Join-Path $xsdHome "xsdcxx.exe"),
     (Join-Path $libXsdHome "include\xsd"),
     (Join-Path $libSslHome "include"),
     (Join-Path $openSslLibPath "libcrypto.lib"),

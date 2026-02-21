@@ -17,11 +17,11 @@ if (-not $xsdHome) {
 }
 
 $xsdToolCandidates = @(
-    (Join-Path $xsdHome "xsdcpp.exe")
+    (Join-Path $xsdHome "xsdcxx.exe")
 )
 $xsdExecutable = $xsdToolCandidates | Where-Object { Test-Path -Path $_ } | Select-Object -First 1
 if (-not $xsdExecutable) {
-    Write-Host "Unable to locate xsdcpp.exe under $xsdHome"
+    Write-Host "Unable to locate xsdcxx.exe under $xsdHome"
     exit 1
 }
 $xsdToolsPath = Split-Path -Parent $xsdExecutable
