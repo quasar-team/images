@@ -38,7 +38,7 @@ Deploy Image Alma 10:
     entrypoint: [""]
   when: manual
   variables:
-    BUILDAH_FORMAT: docker
+    GIT_STRATEGY: none
   script:
     - export DATE_TAG="$(date +%Y%m%d)" && echo "Date TAG --- $DATE_TAG"
     - skopeo login --username "$CI_REGISTRY_USER" --password "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
@@ -53,6 +53,8 @@ Deploy Image Windows 2025:
     name: quay.io/skopeo/stable:latest
     entrypoint: [""]
   when: manual
+  variables:
+    GIT_STRATEGY: none
   script:
     - export DATE_TAG="$(date +%Y%m%d)" && echo "Date TAG --- $DATE_TAG"
     - skopeo login --username "$CI_REGISTRY_USER" --password "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
