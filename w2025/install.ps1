@@ -86,6 +86,42 @@ foreach ($path in $requiredPaths) {
     }
 }
 
+$homeInstallChecks = @(
+    [pscustomobject]@{ Name = "BOOST_HOME"; Path = $boostHome },
+    [pscustomobject]@{ Name = "UNIFIED_AUTOMATION_HOME"; Path = $unifiedAutomationHome },
+    [pscustomobject]@{ Name = "OPEN6_HOME"; Path = $open6Home },
+    [pscustomobject]@{ Name = "XERCES_C_HOME"; Path = $xercesCHome },
+    [pscustomobject]@{ Name = "LIBSSL_HOME"; Path = $libSslHome },
+    [pscustomobject]@{ Name = "LIBXML2_HOME"; Path = $libXml2Home },
+    [pscustomobject]@{ Name = "NET_SNMP_HOME"; Path = $netSnmpHome },
+    [pscustomobject]@{ Name = "XSD_HOME"; Path = $xsdHome }
+)
+
+$mdCheckScript = Join-Path $scriptRoot "Check-MDFlag.ps1"
+if (-not (Test-Path -LiteralPath $mdCheckScript -PathType Leaf)) {
+    throw "Validation failed: expected MD sanity check script '$mdCheckScript'."
+}
+
+Write-Host ""
+Write-Host "Running /MT sanity checks for installed *_HOME directories..."
+foreach ($home in $homeInstallChecks) {
+    if ([string]::IsNullOrWhiteSpace($home.Path)) {
+        throw "Validation failed: environment variable '$($home.Name)' is empty."
+    }
+
+    if (-not (Test-Path -LiteralPath $home.Path -PathType Container)) {
+        throw "Validation failed: '$($home.Name)' path '$($home.Path)' does not exist."
+    }
+
+    Write-Host ""
+    Write-Host "Checking $($home.Name): $($home.Path)"
+
+    & pwsh.exe -NoProfile -ExecutionPolicy Bypass -File $mdCheckScript -RootPath $home.Path
+    if ($LASTEXITCODE -ne 0) {
+        throw "MD sanity check failed for $($home.Name) ('$($home.Path)')."
+    }
+}
+
 & "$scriptRoot\scripts\Cleanup-Image.ps1"
 
 Write-Host "Windows image dependencies installed successfully."
