@@ -37,7 +37,7 @@ if (Test-Path $installPath) {
     Remove-Item -Path $installPath -Recurse -Force
 }
 
-$configure = 'cmake -S "{0}" -B "{1}" -G Ninja -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX="{2}"' -f $xercesSourceDir.FullName, $buildPath, $installPath
+$configure = 'cmake -S "{0}" -B "{1}" -G Ninja -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DCMAKE_MSVC_RUNTIME_LIBRARY="MultiThreaded" -DCMAKE_POLICY_DEFAULT_CMP0091=NEW -DCMAKE_INSTALL_PREFIX="{2}"' -f $xercesSourceDir.FullName, $buildPath, $installPath
 $build = 'cmake --build "{0}" --parallel' -f $buildPath
 $install = 'cmake --install "{0}"' -f $buildPath
 
