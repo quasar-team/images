@@ -42,6 +42,7 @@ $openSslHomeForCMake = $env:LIBSSL_HOME -replace '\\', '/'
 
 $configure = ('cmake -S "{0}" -B "{1}" -G Ninja -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DOPENSSL_ROOT_DIR="{3}" ' +
    '-DOPENSSL_USE_STATIC_LIBS=TRUE -DUA_ENABLE_ENCRYPTION=OPENSSL ' +
+   '-DCMAKE_MSVC_RUNTIME_LIBRARY="MultiThreaded" ' +
    '-DCMAKE_INSTALL_PREFIX="{2}"') -f`
   $open6SourceDir.FullName, $buildPath, $installPath, $openSslHomeForCMake
 $build = 'cmake --build "{0}" --parallel' -f $buildPath

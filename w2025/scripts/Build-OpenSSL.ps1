@@ -42,6 +42,13 @@ $install = 'cd /d "{0}" && nmake /nologo install_sw' -f $openSslSourceDir.FullNa
 
 Write-Host "Configuring and building OpenSSL"
 Invoke-VsDevShellCommand -Command $configure
+
+Write-Host "Patching OpenSSL makefile to use static CRT (/MT)"
+$makefilePath = Join-Path $openSslSourceDir.FullName "makefile"
+$makefileContent = Get-Content -Path $makefilePath -Raw
+$makefileContent = $makefileContent -replace '/MDd', '/MTd' -replace '/MD(?!d)', '/MT'
+Set-Content -Path $makefilePath -Value $makefileContent -Encoding ascii
+
 Invoke-VsDevShellCommand -Command $build
 Invoke-VsDevShellCommand -Command $install
 

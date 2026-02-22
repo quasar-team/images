@@ -117,6 +117,7 @@ $configure = ('cmake -S "{0}" -B "{1}" -G Ninja -DCMAKE_BUILD_TYPE=Release ' +
               '-DLIBXML2_INCLUDE_DIR="{3}" -DLIBXML2_LIBRARIES="{4}" ' +
               '-DBUILD_SHARED_STACK=OFF -DUASTACK_CLIENTAPI_ENABLED=ON ' +
               '-DBUILD_UACLIENTCPP=ON ' +
+              '-DCMAKE_MSVC_RUNTIME_LIBRARY="MultiThreaded" ' +
               '-DCMAKE_C_FLAGS="/DLIBXML_STATIC /DLIBXSLT_STATIC /DXMLSEC_STATIC" ' +
               '-DCMAKE_CXX_FLAGS="/DLIBXML_STATIC /DLIBXSLT_STATIC /DXMLSEC_STATIC /FIconio.h" ' +
               '-DCMAKE_EXE_LINKER_FLAGS="/DEFAULTLIB:bcrypt.lib" '+
