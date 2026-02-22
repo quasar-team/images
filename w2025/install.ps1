@@ -93,8 +93,7 @@ $homeInstallChecks = @(
     [pscustomobject]@{ Name = "XERCES_C_HOME"; Path = $xercesCHome },
     [pscustomobject]@{ Name = "LIBSSL_HOME"; Path = $libSslHome },
     [pscustomobject]@{ Name = "LIBXML2_HOME"; Path = $libXml2Home },
-    [pscustomobject]@{ Name = "NET_SNMP_HOME"; Path = $netSnmpHome },
-    [pscustomobject]@{ Name = "XSD_HOME"; Path = $xsdHome }
+    [pscustomobject]@{ Name = "NET_SNMP_HOME"; Path = $netSnmpHome }
 )
 
 $mdCheckScript = Join-Path $scriptRoot "Check-MDFlag.ps1"
