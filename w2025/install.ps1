@@ -103,21 +103,21 @@ if (-not (Test-Path -LiteralPath $mdCheckScript -PathType Leaf)) {
 
 Write-Host ""
 Write-Host "Running /MT sanity checks for installed *_HOME directories..."
-foreach ($home in $homeInstallChecks) {
-    if ([string]::IsNullOrWhiteSpace($home.Path)) {
-        throw "Validation failed: environment variable '$($home.Name)' is empty."
+foreach ($homeLib in $homeInstallChecks) {
+    if ([string]::IsNullOrWhiteSpace($homeLib.Path)) {
+        throw "Validation failed: environment variable '$($homeLib.Name)' is empty."
     }
 
-    if (-not (Test-Path -LiteralPath $home.Path -PathType Container)) {
-        throw "Validation failed: '$($home.Name)' path '$($home.Path)' does not exist."
+    if (-not (Test-Path -LiteralPath $homeLib.Path -PathType Container)) {
+        throw "Validation failed: '$($homeLib.Name)' path '$($homeLib.Path)' does not exist."
     }
 
     Write-Host ""
-    Write-Host "Checking $($home.Name): $($home.Path)"
+    Write-Host "Checking $($homeLib.Name): $($homeLib.Path)"
 
-    & pwsh.exe -NoProfile -ExecutionPolicy Bypass -File $mdCheckScript -RootPath $home.Path
+    & pwsh.exe -NoProfile -ExecutionPolicy Bypass -File $mdCheckScript -RootPath $homeLib.Path
     if ($LASTEXITCODE -ne 0) {
-        throw "MD sanity check failed for $($home.Name) ('$($home.Path)')."
+        throw "MD sanity check failed for $($homeLib.Name) ('$($homeLib.Path)')."
     }
 }
 
