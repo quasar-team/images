@@ -9,7 +9,7 @@ $workRoot = "C:\libxsd-src"
 $archivePath = "$workRoot\libxsd.tar.gz"
 $sourceRoot = "$workRoot\source"
 $installPath = [Environment]::GetEnvironmentVariable("XSD_HOME")
-$targetHeadersPath = Join-Path $installPath "include\xsd"
+$targetHeadersPath = Join-Path $installPath "include\xsd\cxx"
 
 Add-IssueSection "LIBXSD VERSION: $libXsdVersion"
 Add-IssueSection "XSD_HOME (headers): $targetHeadersPath"
