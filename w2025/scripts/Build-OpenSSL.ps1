@@ -35,10 +35,10 @@ if (Test-Path $installPath) {
 New-Item -Path $installPath -ItemType Directory -Force | Out-Null
 
 $prefixForConfigure = $installPath -replace '\\', '/'
-$configure = 'cd /d "{0}" && perl Configure VC-WIN64A no-shared no-apps --prefix="{1}" --openssldir="{2}"' -f `
+$configure = 'cd /d "{0}" && perl Configure threads no-tests no-apps no-shared -MT VC-WIN64A --prefix="{1}" --openssldir="{2}"' -f `
   $openSslSourceDir.FullName, $prefixForConfigure, "$prefixForConfigure/ssl"
-$build = 'cd /d "{0}" && nmake /nologo' -f $openSslSourceDir.FullName
-$install = 'cd /d "{0}" && nmake /nologo install_sw' -f $openSslSourceDir.FullName
+$build = 'cd /d "{0}" && nmake' -f $openSslSourceDir.FullName
+$install = 'cd /d "{0}" && nmake install_sw' -f $openSslSourceDir.FullName
 
 Write-Host "Configuring and building OpenSSL"
 Invoke-VsDevShellCommand -Command $configure

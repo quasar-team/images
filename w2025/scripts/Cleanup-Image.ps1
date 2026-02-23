@@ -42,6 +42,12 @@ foreach ($path in $pathsToDelete) {
     Remove-Item -Path $path -Recurse -Force -ErrorAction SilentlyContinue
 }
 
+# Remove Visual Studio installer artifacts but keep vswhere.exe binary
+Get-ChildItem "C:\Program Files (x86)\Microsoft Visual Studio\Installer" -Force | Where-Object { $_.Name -ne "vswhere.exe" } | Remove-Item -Recurse -Force
+
+# remove everything but _Instances forlder in C:\ProgramData\Microsoft\VisualStudio\Packages as it is used by vswhere binary
+Get-ChildItem "C:\ProgramData\Microsoft\VisualStudio\Packages" -Force | Where-Object { $_.Name -ne "_Instances" } | Remove-Item -Recurse -Force
+
 # Remove Windows Installer cache artifacts
 Get-ChildItem "C:\Windows\Installer" -Recurse -Force -ErrorAction SilentlyContinue |
     Where-Object { $_.Extension -match '^\.(msi|msp|exe|exe_64)$' } |

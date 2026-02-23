@@ -66,6 +66,65 @@ foreach ($template in $win32TemplateFiles) {
     }
 }
 
+# Force Net-SNMP Win32 "release" CRT from /MD -> /MT (static CRT), without adding a new Configure parameter.
+# This patches win32/Configure in-place. Run before invoking perl Configure.
+
+$configureScript = Join-Path $netSnmpWin32Dir 'Configure'
+if (-not (Test-Path $configureScript)) {
+    throw "Net-SNMP Configure script not found: $configureScript"
+}
+
+$content = Get-Content -Path $configureScript -Raw
+
+# Narrow replacement: only touches the release branch (/MD /D NDEBUG /O2), leaving debug (/MDd ...) unchanged.
+# Typical fragment in win32/Configure:
+#   ($config eq "release" ? "/MD /D NDEBUG /O2 " : "/MDd /D _DEBUG /Od /Gm ")
+$updated = [regex]::Replace(
+    $content,
+    '(?<=(?:\$config\s+eq\s+"release"\s*\?\s*"))\/MD(?=\s+\/D\s+NDEBUG\s+\/O2)',
+    '/MT'
+)
+
+if ($updated -eq $content) {
+    Write-Warning "No release /MD pattern found to patch in $configureScript. The script may have changed; inspect it and adjust the regex."
+} else {
+    Set-Content -Path $configureScript -Value $updated -Encoding ascii
+    Write-Host "Patched release CRT flag in win32/Configure: /MD -> /MT"
+}
+
+#
+# Run this after you have the sources (can be run both before and after perl Configure).
+# If you run it before Configure, it will patch templates + Configure.
+# If you run it after Configure, it will additionally patch generated .mak files.
+
+$root = $netSnmpWin32Dir
+if (-not (Test-Path $root)) { throw "Path not found: $root" }
+
+$replacements = @(
+    @{ Pattern = '(?i)\blibssl_static\.lib\b';    Replacement = 'libssl.lib' },
+    @{ Pattern = '(?i)\blibcrypto_static\.lib\b'; Replacement = 'libcrypto.lib' }
+)
+
+# Target typical text-based build/config files (keeps it fast and avoids binaries)
+$include = @('*.in','*.mak','*.mk','*.def','*.h','*.c','*.cc','*.cpp','*.rc','*.pl','*.pm','*.txt','Makefile*')
+
+$files = Get-ChildItem -Path $root -Recurse -File -Include $include
+
+$changed = 0
+foreach ($f in $files) {
+    $c = Get-Content -Path $f.FullName -Raw -ErrorAction Stop
+    $u = $c
+    foreach ($r in $replacements) {
+        $u = [regex]::Replace($u, $r.Pattern, $r.Replacement)
+    }
+    if ($u -ne $c) {
+        Set-Content -Path $f.FullName -Value $u -Encoding ascii
+        $changed++
+    }
+}
+
+Write-Host "Patched files: $changed"
+
 $configure = 'cd /d "{0}" && perl Configure --config=release --linktype=static --prefix="{1}" --with-sdk --with-ssl --with-sslincdir="{2}" --with-ssllibdir="{3}" --enable-blumenthal-aes' -f $netSnmpWin32Dir, $prefixForConfigure, $openSslIncludePath, $openSslLibraryPath
 $build = 'cd /d "{0}" && nmake /nologo' -f $netSnmpWin32Dir
 $install = 'cd /d "{0}" && nmake /nologo install && nmake /nologo install_devel' -f $netSnmpWin32Dir
