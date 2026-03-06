@@ -13,4 +13,4 @@ COPY . .
 
 RUN powershell -NoLogo -NoProfile -ExecutionPolicy Bypass .\install.ps1
 
-ENTRYPOINT ["C:\\Program Files (x86)\\Microsoft Visual Studio\\18\\BuildTools\\Common7\\Tools\\VsDevCmd.bat", "-arch=amd64", "&&", "pwsh.exe", "-NoLogo", "-ExecutionPolicy", "Bypass"]
+ENTRYPOINT ["pwsh", "-NoLogo", "-NoProfile", "-File", "C:\\entrypoint.ps1"]

@@ -2,6 +2,8 @@
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
+. "c:\scripts\Common.ps1"
+
 # For external commands, explicitly check $LASTEXITCODE after execution.
 $issuePath = "C:\ISSUE\ISSUE.txt"
 if (-not (Test-Path -Path $issuePath)) {
@@ -29,6 +31,9 @@ $env:PATH = "$xsdToolsPath;$env:PATH"
 
 Write-Host "Printing issue file"
 Get-Content $issuePath
+
+# Import VS toolchain env into this PowerShell process.
+Import-VsDevCmdEnvironment -Arch x64 -HostArch x64
 
 if ($args.Count -eq 0) {
     pwsh -NoLogo
