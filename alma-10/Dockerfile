@@ -19,7 +19,9 @@ RUN dnf install -q -y epel-release &&\
     dnf install -q -y cmake ninja-build g++ automake autoconf libtool \
                    cppcheck nano git git-lfs patch graphviz xsd astyle \
                    python python-pip python-devel doxygen perl \
-                   curl tar unzip which rpm-build texlive-latex &&\
+                   curl tar unzip which rpm-build texlive-latex \
+                   doxygen-latex texlive-collection-latexrecommended \
+                   texlive-collection-fontsrecommended &&\
     dnf clean all &&\
     pip install --quiet pre-commit clang-format pytest pybind11 colorama jinja2 lxml pygit2 &&\
     echo "Generated: $(date '+%Y-%m-%d %H:%M')" >> /ISSUE &&\
