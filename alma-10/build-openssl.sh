@@ -17,7 +17,7 @@ curl -fsSL "${OPENSSL_URL}" \
 rm -rf "${LIBSSL_HOME}"
 
 pushd /tmp/openssl-src
-./Configure linux-x86_64 no-shared no-tests no-apps \
+./Configure linux-x86_64 no-shared no-tests no-apps enable-pic \
   --prefix="${LIBSSL_HOME}" \
   --openssldir="${LIBSSL_HOME}/ssl"
 make -j"$(nproc)"

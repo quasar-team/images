@@ -20,9 +20,21 @@ rm -rf "${NET_SNMP_HOME}"
 
 pushd /tmp/net-snmp-src
 
+OPENSSL_LIBDIR="${LIBSSL_HOME}/lib64"
+
+CFLAGS="-fPIC" \
+CPPFLAGS="-fPIC -I${LIBSSL_HOME}/include" \
+LDFLAGS="-L${OPENSSL_LIBDIR}" \
+LIBS="-ldl -pthread" \
+PKG_CONFIG_PATH="${OPENSSL_LIBDIR}/pkgconfig" \
 ./configure \
   --prefix="${NET_SNMP_HOME}" \
-  --with-openssl="${LIBSSL_HOME}/lib" \
+  --with-openssl="${LIBSSL_HOME}" \
+  --with-default-snmp-version=3 \
+  --with-sys-contact=@@no.where \
+  --with-sys-location=Unknown \
+  --with-logfile=/var/log/snmpd.log \
+  --with-persistent-directory=/var/net-snmp \
   --disable-shared \
   --enable-static \
   --disable-debugging \

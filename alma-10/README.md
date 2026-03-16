@@ -15,6 +15,12 @@ docker build \
 
 `ICS_REPO_DEPS_TOKEN` is required to download the Unified Automation UASDK bundle.
 
+To run the same GitLab build job locally from the repository root:
+
+```bash
+gitlab-ci-local --variables-file .env "Image Alma 10"
+```
+
 ## What is built in this image
 
 The `Dockerfile` installs core build tools with `dnf` and then runs these scripts in order:
@@ -28,7 +34,7 @@ The `Dockerfile` installs core build tools with `dnf` and then runs these script
 7. `build-open6.sh`
 8. `build-xerces-c.sh`
 
-They install dependencies under `/opt/*` (static-oriented local installs used by Quasar builds).
+They install dependencies under `/opt/*` as static-oriented local installs used by Quasar builds. The Linux dependency builds are configured to produce static `.a` libraries and compile them as position-independent code (`-fPIC` / `CMAKE_POSITION_INDEPENDENT_CODE=ON`) for downstream linking.
 
 ## Use the scripts on your own AlmaLinux environment
 
@@ -90,4 +96,3 @@ sudo dnf install -y \
   openssl-devel libxml2-devel net-snmp-devel \
   boost-devel xerces-c-devel
 ```
-
