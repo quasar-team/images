@@ -41,9 +41,8 @@ $xsdHome = [Environment]::GetEnvironmentVariable("XSD_HOME")
 
 . "$scriptRoot\scripts\Build-LibXml2.ps1"
 
-# Boost still has separate handling. See BOOST-BUILD.md for manual /MD build
-# instructions until the packaged install path is updated.
-. "$scriptRoot\scripts\Install-Boost.ps1"
+# Boost 1.90.0 needs a temporary Boost.Build patch for VS 2026.
+. "$scriptRoot\scripts\Build-Boost.ps1"
 
 . "$scriptRoot\scripts\Build-UASDK.ps1"
 . "$scriptRoot\scripts\Build-Open6.ps1"

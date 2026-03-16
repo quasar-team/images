@@ -1,6 +1,6 @@
 # w2025 Windows image build and local setup
 
-This directory builds a Windows LTSC 2025 Docker image with all Quasar C++ dependencies preinstalled (static CRT `/MT`), and also contains scripts to reproduce the same setup on your own Windows machine.
+This directory builds a Windows LTSC 2025 Docker image with all Quasar C++ dependencies preinstalled as static `.lib` artifacts using the DLL CRT (`/MD`), and also contains scripts to reproduce the same setup on your own Windows machine.
 
 ## What this folder contains
 
@@ -31,7 +31,7 @@ High-level order in `install.ps1`:
 3. Install temporary build deps (`strawberryperl`, `nasm`).
 4. Build OpenSSL and Net-SNMP (then remove temporary deps).
 5. Build libxml2.
-6. Install Boost from CERN ICS deps repository.
+6. Build Boost from source, applying the temporary `b2` workaround required by Boost 1.90.0 on VS 2026.
 7. Build UASDK, open62541 (`open6`), and Xerces-C++.
 8. Validate expected outputs and run `/MD` checks on produced `.lib` files.
 9. Write version/build metadata to `C:\ISSUE\ISSUE.txt`.
@@ -46,7 +46,7 @@ PowerShell example:
 $env:ICS_REPO_DEPS_TOKEN = "<your-token>"
 ```
 
-This token is required for private package downloads (for example Boost and UASDK).
+This token is required for private package downloads such as UASDK.
 
 ## Build the Docker image
 
