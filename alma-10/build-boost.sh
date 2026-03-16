@@ -17,6 +17,7 @@ curl -fsSL "${BOOST_URL}" \
 pushd /tmp/boost-src
 ./bootstrap.sh
 ./b2 --quiet -d0 -j"$(nproc)" link=static runtime-link=static variant=release threading=multi \
+  cflags=-fPIC cxxflags=-fPIC \
   --prefix="${BOOST_HOME}" install
 popd
 
