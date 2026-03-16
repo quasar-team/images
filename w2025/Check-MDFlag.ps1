@@ -110,22 +110,22 @@ if (-not $libs) {
     exit 0
 }
 
-$mdFailures = @()
+$mtFailures = @()
 $unknown = @()
 
 foreach ($lib in $libs) {
     try {
         $result = Test-LibForMD -ToolPath $tool.Path -ToolKind $tool.Kind -Lib $lib
 
-        if ($result.HasMD) {
-            Write-Host "[FAIL /MD] $($result.Path)" -ForegroundColor Red
+        if ($result.HasMT) {
+            Write-Host "[FAIL /MT] $($result.Path)" -ForegroundColor Red
             if (@($result.DefaultLibs).Count -gt 0) {
                 Write-Host "  DEFAULTLIBs: $($result.DefaultLibs -join ', ')"
             }
-            $mdFailures += $result
+            $mtFailures += $result
         }
-        elseif ($result.HasMT) {
-            Write-Host "[OK  /MT] $($result.Path)" -ForegroundColor Green
+        elseif ($result.HasMD) {
+            Write-Host "[OK  /MD] $($result.Path)" -ForegroundColor Green
         }
         else {
             Write-Host "[WARN ? ] $($result.Path)" -ForegroundColor Yellow
@@ -147,10 +147,10 @@ foreach ($lib in $libs) {
 Write-Host ""
 Write-Host "Summary:"
 Write-Host "  Total .lib files: $(@($libs).Count)"
-Write-Host "  /MD failures:     $($mdFailures.Count)"
+Write-Host "  /MT failures:     $($mtFailures.Count)"
 Write-Host "  Unknown/warnings: $($unknown.Count)"
 
-if ($mdFailures.Count -gt 0) {
+if ($mtFailures.Count -gt 0) {
     exit 1
 }
 exit 0

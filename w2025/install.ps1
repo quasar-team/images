@@ -41,9 +41,8 @@ $xsdHome = [Environment]::GetEnvironmentVariable("XSD_HOME")
 
 . "$scriptRoot\scripts\Build-LibXml2.ps1"
 
-# Boost installed rather than built from source due to b2 incompatibility
-# with Visual Studio 2026; b2 fixed in master to support latest MSVC toolset.
-# Change to Build script with Boost 9.0.1 or later.
+# Boost still has separate handling. See BOOST-BUILD.md for manual /MD build
+# instructions until the packaged install path is updated.
 . "$scriptRoot\scripts\Install-Boost.ps1"
 
 . "$scriptRoot\scripts\Build-UASDK.ps1"
@@ -96,13 +95,13 @@ $homeInstallChecks = @(
     [pscustomobject]@{ Name = "NET_SNMP_HOME"; Path = $netSnmpHome }
 )
 
-$mdCheckScript = Join-Path $scriptRoot "Check-MDFlag.ps1"
-if (-not (Test-Path -LiteralPath $mdCheckScript -PathType Leaf)) {
-    throw "Validation failed: expected MD sanity check script '$mdCheckScript'."
+$runtimeCheckScript = Join-Path $scriptRoot "Check-MDFlag.ps1"
+if (-not (Test-Path -LiteralPath $runtimeCheckScript -PathType Leaf)) {
+    throw "Validation failed: expected runtime sanity check script '$runtimeCheckScript'."
 }
 
 Write-Host ""
-Write-Host "Running /MT sanity checks for installed *_HOME directories..."
+Write-Host "Running /MD sanity checks for installed *_HOME directories..."
 foreach ($homeLib in $homeInstallChecks) {
     if ([string]::IsNullOrWhiteSpace($homeLib.Path)) {
         throw "Validation failed: environment variable '$($homeLib.Name)' is empty."
@@ -115,9 +114,9 @@ foreach ($homeLib in $homeInstallChecks) {
     Write-Host ""
     Write-Host "Checking $($homeLib.Name): $($homeLib.Path)"
 
-    & pwsh.exe -NoProfile -ExecutionPolicy Bypass -File $mdCheckScript -RootPath $homeLib.Path
+    & pwsh.exe -NoProfile -ExecutionPolicy Bypass -File $runtimeCheckScript -RootPath $homeLib.Path
     if ($LASTEXITCODE -ne 0) {
-        throw "MD sanity check failed for $($homeLib.Name) ('$($homeLib.Path)')."
+        throw "Runtime sanity check failed for $($homeLib.Name) ('$($homeLib.Path)')."
     }
 }
 

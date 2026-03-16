@@ -9,7 +9,7 @@ This directory builds a Windows LTSC 2025 Docker image with all Quasar C++ depen
 - `scripts/*.ps1`: per-dependency install/build scripts.
 - `Local-Env.ps1`: prepares env vars and loads Visual Studio developer environment in the current PowerShell session.
 - `Create-DotEnv-File.ps1` + `Load-DotEnv-File.ps1`: pass secrets (`ICS_REPO_DEPS_TOKEN`) through a temporary `.env` file.
-- `Check-MDFlag.ps1`: verifies generated `.lib` files are not built with `/MD`.
+- `Check-MDFlag.ps1`: verifies generated `.lib` files are built with `/MD` and not `/MT`.
 
 ## Dependencies built/installed
 
@@ -33,7 +33,7 @@ High-level order in `install.ps1`:
 5. Build libxml2.
 6. Install Boost from CERN ICS deps repository.
 7. Build UASDK, open62541 (`open6`), and Xerces-C++.
-8. Validate expected outputs and run `/MT` checks on produced `.lib` files.
+8. Validate expected outputs and run `/MD` checks on produced `.lib` files.
 9. Write version/build metadata to `C:\ISSUE\ISSUE.txt`.
 
 ## Required secret
@@ -112,7 +112,6 @@ After completion, check:
 
 ## Important behavior and validation
 
-- All major C/C++ dependencies are built static and configured for MSVC runtime `MultiThreaded` (`/MT`).
-- `Check-MDFlag.ps1` scans generated `.lib` files and fails the process if `/MD` is detected.
+- All C/C++ dependencies built from source are expected to produce static `.lib` outputs with MSVC runtime `/MD`.
+- `Check-MDFlag.ps1` scans generated `.lib` files and fails the process if `/MT` is detected.
 - `install.ps1` performs path validation and stops on first failure (`$ErrorActionPreference = "Stop"`).
-

@@ -120,7 +120,7 @@ $configure = ('cmake -S "{0}" -B "{1}" -G Ninja -DCMAKE_BUILD_TYPE=Release ' +
               '-DCMAKE_C_FLAGS="/DLIBXML_STATIC /DLIBXSLT_STATIC /DXMLSEC_STATIC" ' +
               '-DCMAKE_CXX_FLAGS="/DLIBXML_STATIC /DLIBXSLT_STATIC /DXMLSEC_STATIC /FIconio.h" ' +
               '-DCMAKE_EXE_LINKER_FLAGS="/DEFAULTLIB:bcrypt.lib" '+
-              '-DCMAKE_INSTALL_PREFIX="{5}" -DCMAKE_MSVC_RUNTIME_LIBRARY="MultiThreaded"') -f `
+              '-DCMAKE_INSTALL_PREFIX="{5}"') -f `
                  $resolvedSourcePath, $buildPath, $openSslHomeForCMake, $libXml2IncludeForCMake, `
                  $libXml2LibraryForCMake, $installPath
 $build = 'cmake --build "{0}" --parallel' -f $buildPath
