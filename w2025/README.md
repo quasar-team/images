@@ -17,7 +17,6 @@ The install flow creates these homes (default paths):
 
 - `C:\boost`
 - `C:\unified-automation`
-- `C:\open6`
 - `C:\xerces-c`
 - `C:\libssl`
 - `C:\libxml2`
@@ -31,8 +30,8 @@ High-level order in `install.ps1`:
 3. Install temporary build deps (`strawberryperl`, `nasm`).
 4. Build OpenSSL and Net-SNMP (then remove temporary deps).
 5. Build libxml2.
-6. Build Boost from source, applying the temporary `b2` workaround required by Boost 1.90.0 on VS 2026.
-7. Build UASDK, open62541 (`open6`), and Xerces-C++.
+6. Install Boost from CERN ICS deps repository.
+7. Build UASDK and Xerces-C++.
 8. Validate expected outputs and run `/MD` checks on produced `.lib` files.
 9. Write version/build metadata to `C:\ISSUE\ISSUE.txt`.
 
