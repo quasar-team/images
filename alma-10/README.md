@@ -48,6 +48,7 @@ sudo dnf install -y \
   cmake ninja-build g++ automake autoconf libtool \
   cppcheck nano git git-lfs patch graphviz xsd astyle \
   python python-pip python-devel doxygen perl \
+  qt6-qtbase-devel \
   curl tar unzip which rpm-build
 ```
 
@@ -91,5 +92,8 @@ Example:
 ```bash
 sudo dnf install -y \
   openssl-devel libxml2-devel net-snmp-devel \
-  boost-devel xerces-c-devel
+  boost-devel xerces-c-devel \
+  qt6-qtbase-devel
 ```
+
+On AlmaLinux 10, `qt6-qtbase-devel` provides the development files for both the Qt6 base module (`Qt6Core`) and the network module (`Qt6Network`), including the CMake package files and pkg-config metadata.

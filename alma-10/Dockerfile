@@ -18,6 +18,7 @@ RUN dnf install -q -y epel-release &&\
     dnf install -q -y cmake ninja-build g++ automake autoconf libtool \
                    cppcheck nano git git-lfs patch graphviz xsd astyle \
                    python python-pip python-devel doxygen perl \
+                   qt6-qtbase-devel \
                    curl tar unzip which rpm-build texlive-latex \
                    doxygen-latex texlive-collection-latexrecommended \
                    texlive-collection-fontsrecommended &&\

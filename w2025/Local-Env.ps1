@@ -12,6 +12,7 @@ $env:UNIFIED_AUTOMATION_HOME="C:\unified-automation"
 $env:XERCES_C_HOME="C:\xerces-c"
 $env:LIBXML2_HOME="C:\libxml2"
 $env:XSD_HOME="C:\xsd"
+$env:QT6_HOME="C:\Qt6"
 
 
 # Load your common script in the same session

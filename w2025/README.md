@@ -22,6 +22,7 @@ The install flow creates these homes (default paths):
 - `C:\libxml2`
 - `C:\net-snmp`
 - `C:\xsd`
+- `C:\Qt6` for Qt 6 shared binaries (`Qt6Core` and `Qt6Network`) when needed by ISEG HAL
 
 High-level order in `install.ps1`:
 
@@ -108,6 +109,10 @@ After completion, check:
 
 - `C:\ISSUE\ISSUE.txt` for installed versions and build summary.
 - Each `*_HOME` directory for headers/libs.
+
+## Qt 6 install for ISEG HAL
+
+Qt Online Installer authentication is required before you run the script. The preferred option is to provide `QT_INSTALLER_JWT_TOKEN` as environment variable.
 
 ## Important behavior and validation
 
