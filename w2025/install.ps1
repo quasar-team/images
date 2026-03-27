@@ -26,6 +26,7 @@ $netSnmpHome = [Environment]::GetEnvironmentVariable("NET_SNMP_HOME")
 $xsdHome = [Environment]::GetEnvironmentVariable("XSD_HOME")
 
 . "$scriptRoot\scripts\Install-BaseTools.ps1"
+. "$scriptRoot\scripts\Install-Qt6.ps1"
 . "$scriptRoot\scripts\Install-Xsd.ps1"
 . "$scriptRoot\scripts\Install-LibXsd.ps1"
 
