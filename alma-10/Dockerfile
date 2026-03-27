@@ -21,7 +21,7 @@ RUN dnf install -q -y epel-release &&\
                    qt6-qtbase-devel \
                    curl tar unzip which rpm-build texlive-latex \
                    doxygen-latex texlive-collection-latexrecommended \
-                   texlive-collection-fontsrecommended &&\
+                   texlive-collection-fontsrecommended pandoc &&\
     dnf clean all &&\
     pip install --quiet pre-commit clang-format pytest pybind11 colorama jinja2 lxml pygit2 &&\
     echo "Generated: $(date '+%Y-%m-%d %H:%M')" >> /ISSUE &&\
