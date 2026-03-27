@@ -6,6 +6,7 @@ ENV LIBSSL_HOME=C:\\libssl
 ENV LIBXML2_HOME=C:\\libxml2
 ENV NET_SNMP_HOME=C:\\net-snmp
 ENV XSD_HOME=C:\\xsd
+ENV QT6_HOME=C:\\Qt6
 
 WORKDIR C:\\
 COPY . .
