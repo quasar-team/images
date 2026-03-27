@@ -2,7 +2,9 @@ $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
 $variableNames = @(
-    "ICS_REPO_DEPS_TOKEN"
+    "ICS_REPO_DEPS_TOKEN",
+    "QT_ACCOUNT_EMAIL",
+    "QT_ACCOUNT_PASSWORD"
 )
 
 $envValues = @{}
