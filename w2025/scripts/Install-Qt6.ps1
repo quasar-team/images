@@ -1,13 +1,16 @@
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
-$scriptRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
-$commonScript = Join-Path $scriptRoot "Common.ps1"
-if (-not (Test-Path -LiteralPath $commonScript -PathType Leaf)) {
-    throw "Common helper script not found: $commonScript"
+Assert-RequiredEnvVar -Name "QT_ACCOUNT_EMAIL"
+Assert-RequiredEnvVar -Name "QT_ACCOUNT_PASSWORD"
+
+$qtScriptRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
+$qtCommonScript = Join-Path $qtScriptRoot "Common.ps1"
+if (-not (Test-Path -LiteralPath $qtCommonScript -PathType Leaf)) {
+    throw "Common helper script not found: $qtCommonScript"
 }
 
-. $commonScript
+. $qtCommonScript
 
 $qtUsername = [Environment]::GetEnvironmentVariable("QT_ACCOUNT_EMAIL")
 $qtPassword = [Environment]::GetEnvironmentVariable("QT_ACCOUNT_PASSWORD")
@@ -19,10 +22,6 @@ $workRoot = "C:\qt6-src"
 $installerPath = Join-Path $workRoot "qt-online-installer-windows-x64-online.exe"
 $installerRoot = Join-Path $workRoot "qt-online-root"
 $installedQtRoot = Join-Path $installerRoot "$qtVersion\msvc2022_64"
-
-if ([string]::IsNullOrWhiteSpace($qtUsername) -or [string]::IsNullOrWhiteSpace($qtPassword)) {
-    throw "Set QT_ACCOUNT_EMAIL and QT_ACCOUNT_PASSWORD before running this script."
-}
 
 if (-not (Test-Path -LiteralPath "C:\ISSUE\ISSUE.txt" -PathType Leaf)) {
     Initialize-IssueFile
