@@ -1,5 +1,6 @@
 # Stop execution on PowerShell snippet errors.
-$ErrorActionPreference = "Stop"
+$ErrorActionPreference = 'Stop'
+$PSNativeCommandUseErrorActionPreference = $true
 Set-StrictMode -Version Latest
 
 . "c:\scripts\Common.ps1"
