@@ -6,11 +6,8 @@ ENV XERCES_C_HOME=/opt/xerces-c
 ENV LIBSSL_HOME=/opt/libssl
 ENV LIBXML2_HOME=/opt/libxml2
 ENV NET_SNMP_HOME=/opt/net-snmp
-ENV XSD_HOME=/opt/xsd
-ENV LIBXSD_HOME=/opt/libxsd
-ENV PATH=/opt/xsd:${PATH}
 
-COPY build-boost.sh build-uasdk.sh build-xerces-c.sh build-openssl.sh build-libxml2.sh build-net-snmp.sh install-libxsd.sh /tmp/
+COPY build-boost.sh build-uasdk.sh build-xerces-c.sh build-openssl.sh build-libxml2.sh build-net-snmp.sh /tmp/
 COPY entrypoint.sh /entrypoint.sh
 
 RUN dnf install -q -y epel-release &&\
@@ -34,11 +31,10 @@ RUN dnf install -q -y epel-release &&\
     echo "*******************" >> /ISSUE &&\
     g++ --version &>> /ISSUE &&\
     echo "*******************" >> /ISSUE &&\
-    chmod +x /tmp/build-boost.sh /tmp/build-uasdk.sh /tmp/build-xerces-c.sh /tmp/build-openssl.sh /tmp/build-libxml2.sh /tmp/build-net-snmp.sh /tmp/install-libxsd.sh /entrypoint.sh &&\
+    chmod +x /tmp/build-boost.sh /tmp/build-uasdk.sh /tmp/build-xerces-c.sh /tmp/build-openssl.sh /tmp/build-libxml2.sh /tmp/build-net-snmp.sh /entrypoint.sh &&\
     /tmp/build-openssl.sh &&\
     /tmp/build-libxml2.sh &&\
     /tmp/build-net-snmp.sh &&\
-    /tmp/install-libxsd.sh &&\
     /tmp/build-boost.sh &&\
     ICS_REPO_DEPS_TOKEN="$ICS_REPO_DEPS_TOKEN" /tmp/build-uasdk.sh &&\
     /tmp/build-xerces-c.sh

@@ -28,7 +28,6 @@ The `Dockerfile` installs core build tools with `dnf` and then runs these script
 1. `build-openssl.sh`
 2. `build-libxml2.sh`
 3. `build-net-snmp.sh`
-4. `install-libxsd.sh`
 5. `build-boost.sh`
 6. `build-uasdk.sh`
 7. `build-xerces-c.sh`
@@ -61,8 +60,6 @@ export XERCES_C_HOME=/opt/xerces-c
 export LIBSSL_HOME=/opt/libssl
 export LIBXML2_HOME=/opt/libxml2
 export NET_SNMP_HOME=/opt/net-snmp
-export XSD_HOME=/opt/xsd
-export LIBXSD_HOME=/opt/libxsd
 export PATH=/opt/xsd:$PATH
 export ICS_REPO_DEPS_TOKEN="<your_token>"
 ```
@@ -75,7 +72,6 @@ All scripts install under `/opt` and therefore must run as root. Use `sudo`.
 sudo -E ./build-openssl.sh
 sudo -E ./build-libxml2.sh
 sudo -E ./build-net-snmp.sh
-sudo -E ./install-libxsd.sh
 sudo -E ./build-boost.sh
 sudo -E ./build-uasdk.sh
 sudo -E ./build-xerces-c.sh
