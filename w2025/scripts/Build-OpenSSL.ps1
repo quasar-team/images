@@ -3,15 +3,19 @@ Set-StrictMode -Version Latest
 
 Assert-RequiredEnvVar -Name "LIBSSL_HOME"
 
-$openSslVersion = "3.5.5"
-$openSslUrl = "https://github.com/openssl/openssl/releases/download/openssl-3.5.5/openssl-3.5.5.tar.gz"
+$openSslVersion = "3.5.7"
+$openSslUrl = "https://github.com/openssl/openssl/releases/download/openssl-3.5.7/openssl-3.5.7.tar.gz"
 $workRoot = "C:\openssl-src"
 $archivePath = "$workRoot\openssl.tar.gz"
 $sourceRoot = "$workRoot\source"
+$debugSourceRoot = "$workRoot\source-debug"
+$debugInstallPath = "$workRoot\install-debug"
 $installPath = [Environment]::GetEnvironmentVariable("LIBSSL_HOME")
+$debugModeEnabled = Test-DebugModeEnabled
 
 Add-IssueSection "OPENSSL VERSION: $openSslVersion"
 Add-IssueSection "LIBSSL_HOME: $installPath"
+Add-IssueSection "OPENSSL DEBUG BUILD: $debugModeEnabled"
 
 if (Test-Path $workRoot) {
     Remove-Item -Path $workRoot -Recurse -Force
@@ -24,25 +28,59 @@ Invoke-WebRequest -Uri $openSslUrl -OutFile $archivePath
 Write-Host "Extracting OpenSSL"
 Invoke-Checked tar @('-xzf', $archivePath, '-C', $sourceRoot)
 
-$openSslSourceDir = Get-ChildItem -Path $sourceRoot -Directory | Select-Object -First 1
-if ($null -eq $openSslSourceDir) {
-    throw "Unable to locate extracted OpenSSL source directory."
+function Get-OpenSslSourceDirectory {
+    param(
+        [Parameter(Mandatory = $true)][string]$RootPath
+    )
+
+    $sourceDir = Get-ChildItem -Path $RootPath -Directory | Select-Object -First 1
+    if ($null -eq $sourceDir) {
+        throw "Unable to locate extracted OpenSSL source directory under '$RootPath'."
+    }
+
+    return $sourceDir
+}
+
+function Invoke-OpenSslBuild {
+    param(
+        [Parameter(Mandatory = $true)][string]$SourcePath,
+        [Parameter(Mandatory = $true)][string]$DestinationPath,
+        [Parameter(Mandatory = $true)][bool]$IsDebug
+    )
+
+    New-Item -Path $DestinationPath -ItemType Directory -Force | Out-Null
+
+    $prefixForConfigure = $DestinationPath -replace '\\', '/'
+    $buildTypeOptions = if ($IsDebug) { "--debug -MDd" } else { "-MD" }
+    $configure = 'cd /d "{0}" && perl Configure threads no-tests no-apps no-shared {1} VC-WIN64A --prefix="{2}" --openssldir="{3}"' -f `
+      $SourcePath, $buildTypeOptions, $prefixForConfigure, "$prefixForConfigure/ssl"
+    $build = 'cd /d "{0}" && nmake' -f $SourcePath
+    $install = 'cd /d "{0}" && nmake install_sw' -f $SourcePath
+
+    $label = if ($IsDebug) { "Debug" } else { "Release" }
+    Write-Host "Configuring and building OpenSSL ($label)"
+    Invoke-VsDevShellCommand -Command $configure
+    Invoke-VsDevShellCommand -Command $build
+    Invoke-VsDevShellCommand -Command $install
 }
 
 if (Test-Path $installPath) {
     Remove-Item -Path $installPath -Recurse -Force
 }
-New-Item -Path $installPath -ItemType Directory -Force | Out-Null
 
-$prefixForConfigure = $installPath -replace '\\', '/'
-$configure = 'cd /d "{0}" && perl Configure threads no-tests no-apps no-shared -MD VC-WIN64A --prefix="{1}" --openssldir="{2}"' -f `
-  $openSslSourceDir.FullName, $prefixForConfigure, "$prefixForConfigure/ssl"
-$build = 'cd /d "{0}" && nmake' -f $openSslSourceDir.FullName
-$install = 'cd /d "{0}" && nmake install_sw' -f $openSslSourceDir.FullName
+$openSslSourceDir = Get-OpenSslSourceDirectory -RootPath $sourceRoot
+Invoke-OpenSslBuild -SourcePath $openSslSourceDir.FullName -DestinationPath $installPath -IsDebug $false
 
-Write-Host "Configuring and building OpenSSL"
-Invoke-VsDevShellCommand -Command $configure
-Invoke-VsDevShellCommand -Command $build
-Invoke-VsDevShellCommand -Command $install
+if ($debugModeEnabled) {
+    New-Item -Path $debugSourceRoot -ItemType Directory -Force | Out-Null
+    Invoke-Checked tar @('-xzf', $archivePath, '-C', $debugSourceRoot)
+    $openSslDebugSourceDir = Get-OpenSslSourceDirectory -RootPath $debugSourceRoot
+
+    Invoke-OpenSslBuild -SourcePath $openSslDebugSourceDir.FullName -DestinationPath $debugInstallPath -IsDebug $true
+    $debugLibraries = Copy-DebugBuildArtifacts `
+        -DebugInstallPath $debugInstallPath `
+        -InstallPath $installPath
+    Write-Host "Installed OpenSSL debug libraries: $($debugLibraries -join ', ')"
+}
 
 Remove-Item -Path $workRoot -Recurse -Force

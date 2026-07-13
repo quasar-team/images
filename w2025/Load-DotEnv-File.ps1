@@ -2,7 +2,8 @@ $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
 if (-not (Test-Path ".env")) {
-    throw "Expected .env file was not found."
+    Write-Warning "Optional .env file was not found. Skipping environment variable loading."
+    return
 }
 
 $fileContent = Get-Content ".env"

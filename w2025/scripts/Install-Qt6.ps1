@@ -14,8 +14,9 @@ if (-not (Test-Path -LiteralPath $qtCommonScript -PathType Leaf)) {
 
 $qtUsername = [Environment]::GetEnvironmentVariable("QT_ACCOUNT_EMAIL")
 $qtPassword = [Environment]::GetEnvironmentVariable("QT_ACCOUNT_PASSWORD")
-$qtVersion = "6.11.0"
-$qtPackageName = "qt.qt6.6110.win64_msvc2022_64"
+$qtVersion = "6.11.1"
+$qtPackageName = "qt.qt6.6111.win64_msvc2022_64"
+$qt5CompatPackageName = "qt.qt6.6111.addons.qt5compat"
 $installPath = "C:\qt6"
 $qtOnlineInstallerUrl = "https://download.qt.io/official_releases/online_installers/qt-online-installer-windows-x64-online.exe"
 $workRoot = "C:\qt6-src"
@@ -49,7 +50,8 @@ $installerArgs = @(
     "--default-answer",
     "--confirm-command",
     "install",
-    $qtPackageName
+    $qtPackageName,
+    $qt5CompatPackageName
 )
 
 Write-Host "Installing Qt 6 with Qt Online Installer CLI"
@@ -70,10 +72,13 @@ Copy-Item -Path (Join-Path $installedQtRoot "*") -Destination $installPath -Recu
 $requiredPaths = @(
     (Join-Path $installPath "include\QtCore"),
     (Join-Path $installPath "include\QtNetwork"),
+    (Join-Path $installPath "include\QtCore5Compat"),
     (Join-Path $installPath "lib\Qt6Core.lib"),
     (Join-Path $installPath "lib\Qt6Network.lib"),
+    (Join-Path $installPath "lib\Qt6Core5Compat.lib"),
     (Join-Path $installPath "bin\Qt6Core.dll"),
-    (Join-Path $installPath "bin\Qt6Network.dll")
+    (Join-Path $installPath "bin\Qt6Network.dll"),
+    (Join-Path $installPath "bin\Qt6Core5Compat.dll")
 )
 
 foreach ($path in $requiredPaths) {

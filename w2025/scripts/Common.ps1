@@ -80,6 +80,108 @@ function Assert-RequiredEnvVar {
     }
 }
 
+function Test-DebugModeEnabled {
+    return ([Environment]::GetEnvironmentVariable("DEBUG_MODE") -eq "1")
+}
+
+function Get-DebugLibraryName {
+    param(
+        [Parameter(Mandatory = $true)][string]$LibraryName
+    )
+
+    $directory = Split-Path -Parent $LibraryName
+    $fileName = Split-Path -Leaf $LibraryName
+    $baseName = [System.IO.Path]::GetFileNameWithoutExtension($fileName)
+    $extension = [System.IO.Path]::GetExtension($fileName)
+    $debugName = "${baseName}d${extension}"
+
+    if ([string]::IsNullOrWhiteSpace($directory)) {
+        return $debugName
+    }
+
+    return Join-Path $directory $debugName
+}
+
+function Copy-DebugBuildArtifacts {
+    param(
+        [Parameter(Mandatory = $true)][string]$DebugInstallPath,
+        [Parameter(Mandatory = $true)][string]$InstallPath,
+        [string[]]$AdditionalLibraryAliases = @()
+    )
+
+    $debugLibPath = @(
+        (Join-Path $DebugInstallPath "lib"),
+        (Join-Path $DebugInstallPath "lib64")
+    ) | Where-Object { Test-Path -LiteralPath $_ -PathType Container } | Select-Object -First 1
+    $targetLibPath = @(
+        (Join-Path $InstallPath "lib"),
+        (Join-Path $InstallPath "lib64")
+    ) | Where-Object { Test-Path -LiteralPath $_ -PathType Container } | Select-Object -First 1
+
+    if ($null -eq $debugLibPath) {
+        throw "Debug install library directory was not created under '$DebugInstallPath\\lib' or '$DebugInstallPath\\lib64'."
+    }
+    if ($null -eq $targetLibPath) {
+        $targetLibPath = Join-Path $InstallPath "lib"
+        New-Item -Path $targetLibPath -ItemType Directory -Force | Out-Null
+    }
+
+    $copiedLibraries = @()
+    $debugLibraries = @(Get-ChildItem -LiteralPath $debugLibPath -File -Filter "*.lib")
+    if ($debugLibraries.Count -eq 0) {
+        throw "No debug .lib files found in '$debugLibPath'."
+    }
+
+    foreach ($library in $debugLibraries) {
+        $targetPath = Join-Path $targetLibPath $library.Name
+        if (Test-Path -LiteralPath $targetPath -PathType Leaf) {
+            $targetPath = Get-DebugLibraryName -LibraryName $targetPath
+        }
+
+        Copy-Item -LiteralPath $library.FullName -Destination $targetPath -Force
+        $copiedLibraries += $targetPath
+    }
+
+    foreach ($alias in $AdditionalLibraryAliases) {
+        $parts = $alias -split "=", 2
+        if ($parts.Count -ne 2) {
+            throw "Invalid debug library alias '$alias'. Expected 'source.lib=alias.lib'."
+        }
+
+        $sourceName = $parts[0]
+        $aliasName = $parts[1]
+        $sourcePath = Join-Path $debugLibPath $sourceName
+        if (-not (Test-Path -LiteralPath $sourcePath -PathType Leaf)) {
+            throw "Debug library alias source was not found: $sourcePath"
+        }
+
+        Copy-Item -LiteralPath $sourcePath -Destination (Join-Path $targetLibPath $aliasName) -Force
+    }
+
+    foreach ($subdir in @("lib", "bin")) {
+        $debugArtifactPath = Join-Path $DebugInstallPath $subdir
+        $targetArtifactPath = Join-Path $InstallPath $subdir
+        if (-not (Test-Path -LiteralPath $debugArtifactPath -PathType Container)) {
+            continue
+        }
+
+        if (-not (Test-Path -LiteralPath $targetArtifactPath -PathType Container)) {
+            New-Item -Path $targetArtifactPath -ItemType Directory -Force | Out-Null
+        }
+
+        foreach ($pdb in @(Get-ChildItem -LiteralPath $debugArtifactPath -File -Filter "*.pdb")) {
+            $targetPath = Join-Path $targetArtifactPath $pdb.Name
+            if (Test-Path -LiteralPath $targetPath -PathType Leaf) {
+                $targetPath = Get-DebugLibraryName -LibraryName $targetPath
+            }
+
+            Copy-Item -LiteralPath $pdb.FullName -Destination $targetPath -Force
+        }
+    }
+
+    return $copiedLibraries
+}
+
 function Initialize-IssueFile {
     # Create directory C:\ISSUE if it doesn't exist, then create or clear the ISSUE.txt file within it.
     $issueDir = "C:\ISSUE"

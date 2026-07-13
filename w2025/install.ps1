@@ -8,6 +8,8 @@ $scriptRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
 
 Initialize-IssueFile
 Add-IssueSection "Generated: $(Get-Date -Format 'yyyy-MM-dd HH:mm')"
+$debugModeEnabled = Test-DebugModeEnabled
+Add-IssueSection "DEBUG_MODE ENABLED: $debugModeEnabled"
 
 Assert-RequiredEnvVar -Name "BOOST_HOME"
 Assert-RequiredEnvVar -Name "UNIFIED_AUTOMATION_HOME"
@@ -74,10 +76,48 @@ $requiredPaths = @(
     (Join-Path $xercesCHome "lib")
 )
 
-foreach ($path in $requiredPaths) {
-    if (-not (Test-Path $path)) {
-        throw "Validation failed: expected path '$path' was not created."
+function Assert-RequiredPath {
+    param(
+        [Parameter(Mandatory = $true)][string]$Path
+    )
+
+    if (-not (Test-Path $Path)) {
+        throw "Validation failed: expected path '$Path' was not created."
     }
+}
+
+function Assert-AnyLibraryMatches {
+    param(
+        [Parameter(Mandatory = $true)][string]$RootPath,
+        [Parameter(Mandatory = $true)][string]$Pattern,
+        [Parameter(Mandatory = $true)][string]$Description
+    )
+
+    $matches = @(Get-ChildItem -LiteralPath $RootPath -Recurse -File -Filter $Pattern -ErrorAction SilentlyContinue)
+    if ($matches.Count -eq 0) {
+        throw "Validation failed: expected $Description matching '$Pattern' under '$RootPath'."
+    }
+}
+
+foreach ($path in $requiredPaths) {
+    Assert-RequiredPath -Path $path
+}
+
+if ($debugModeEnabled) {
+    $debugRequiredPaths = @(
+        (Join-Path $openSslLibPath "libcryptod.lib"),
+        (Join-Path $openSslLibPath "libssld.lib"),
+        (Join-Path $libXml2Home "lib\libxml2sd.lib"),
+        (Join-Path $netSnmpHome "lib\netsnmpd.lib"),
+        (Join-Path $xercesCHome "lib\xerces-c_3D.lib")
+    )
+
+    foreach ($path in $debugRequiredPaths) {
+        Assert-RequiredPath -Path $path
+    }
+
+    Assert-AnyLibraryMatches -RootPath (Join-Path $boostHome "lib") -Pattern "*gd*.lib" -Description "Boost debug library"
+    Assert-AnyLibraryMatches -RootPath (Join-Path $unifiedAutomationHome "lib") -Pattern "*d.lib" -Description "UASDK debug library"
 }
 
 $homeInstallChecks = @(
