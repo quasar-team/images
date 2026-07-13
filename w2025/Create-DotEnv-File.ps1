@@ -6,6 +6,9 @@ $variableNames = @(
     "QT_ACCOUNT_EMAIL",
     "QT_ACCOUNT_PASSWORD"
 )
+$optionalVariableNames = @(
+    "DEBUG_MODE"
+)
 
 $envValues = @{}
 
@@ -15,6 +18,12 @@ foreach ($varName in $variableNames) {
     } else {
         Write-Error "Environment variable '$varName' not found."
         exit 1
+    }
+}
+
+foreach ($varName in $optionalVariableNames) {
+    if ($envValue = Get-Item "env:$varName" -ErrorAction SilentlyContinue) {
+        $envValues[$varName] = $envValue.Value
     }
 }
 

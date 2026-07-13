@@ -36,6 +36,11 @@ High-level order in `install.ps1`:
 8. Validate expected outputs and run `/MD` checks on produced `.lib` files.
 9. Write version/build metadata to `C:\ISSUE\ISSUE.txt`.
 
+When `DEBUG_MODE=1` is present in the environment, the source-built C/C++
+libraries are also built in Debug configuration and installed alongside the
+release libraries. Any other value, or an unset `DEBUG_MODE`, keeps the default
+release-only behavior.
+
 ## Required secret
 
 Set `ICS_REPO_DEPS_TOKEN` before building/running install scripts.
@@ -59,14 +64,19 @@ $env:ICS_REPO_DEPS_TOKEN = "<your-token>"
 # 2) Create temporary .env consumed by install.ps1 during docker build
 pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File .\Create-DotEnv-File.ps1
 
-# 3) Build image
+# 3) Stage the shared Net-SNMP CMake package file into this Docker context
+Copy-Item -LiteralPath ..\misc\FindNetSNMP.cmake -Destination .\FindNetSNMP.cmake -Force
+
+# 4) Build image
 docker build -t quasar/w2025:latest .
 ```
 
 Notes:
 
 - `Load-DotEnv-File.ps1` is called by `install.ps1` and deletes `.env` after loading it.
+- `Create-DotEnv-File.ps1` includes optional `DEBUG_MODE` when it is set in the current shell.
 - Build can take a long time (OpenSSL and Net-SNMP are the slowest steps).
+- `DEBUG_MODE=1` makes the build substantially longer because each source-built library is built twice.
 
 ## Use the built image
 
@@ -95,13 +105,14 @@ Use this when you want the same dependency layout directly on a host machine.
 # 1) Open elevated PowerShell and go to this directory
 cd <path-to>\w2025
 
-# 2) Set private token
-$env:ICS_REPO_DEPS_TOKEN = "<your-token>"
+# 2) Set the variables inside the Local-Env.ps1
+#    Set DEBUG_MODE=1 there only when you need debug dependency artifacts.
 
 # 3) Load default *_HOME variables + VS toolchain env in this process
 . .\Local-Env.ps1
 
 # 4) Run full setup
+Copy-Item -LiteralPath ..\misc\FindNetSNMP.cmake -Destination .\FindNetSNMP.cmake -Force
 pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File .\install.ps1
 ```
 
@@ -116,6 +127,8 @@ Qt Online Installer authentication is required before you run the script.
 
 ## Important behavior and validation
 
-- All C/C++ dependencies built from source are expected to produce static `.lib` outputs with MSVC runtime `/MD`.
-- `Check-MDFlag.ps1` scans generated `.lib` files and fails the process if `/MT` is detected.
+- All C/C++ dependencies built from source are expected to produce static `.lib` outputs with MSVC DLL CRT (`/MD` for Release, `/MDd` for Debug).
+- Debug libraries are placed in the same `*_HOME\lib` trees using debug-specific filenames where the upstream build supports them, or a `d` suffix alias when Debug and Release would otherwise collide.
+- Existing CMake find modules that search Release/Debug variables, such as `*_LIBRARY_RELEASE` and `*_LIBRARY_DEBUG`, can find both variants without extra dependency paths.
+- `Check-MDFlag.ps1` scans generated `.lib` files and fails the process if `/MT` or `/MTd` is detected.
 - `install.ps1` performs path validation and stops on first failure (`$ErrorActionPreference = "Stop"`).
