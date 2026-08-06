@@ -93,3 +93,16 @@ sudo dnf install -y \
 ```
 
 On AlmaLinux 10, `qt6-qtbase-devel` provides the development files for both the Qt6 base module (`Qt6Core`) and the network module (`Qt6Network`), including the CMake package files and pkg-config metadata.
+
+## Troubleshooting
+
+#### Compiling gives me missing CURL and ICU library dependencies
+
+Probably you installed the static dependencies **and** the dynamic ones, so fix the environment by uninstalling the unnecessary packages and re-run the build scripts. For example like:
+
+```bash
+sudo dnf remove libcurl-devel-8.12.1-4.el10.x86_64 
+sudo dnf remove libicu-devel.x86_64
+sudo -E ./build-xerces-c.sh
+sudo -E ./build-boost.sh
+```
